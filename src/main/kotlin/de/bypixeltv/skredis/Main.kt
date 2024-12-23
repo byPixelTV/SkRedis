@@ -7,6 +7,8 @@ import de.bypixeltv.skredis.managers.RedisController
 import de.bypixeltv.skredis.managers.RedisMessageManager
 import de.bypixeltv.skredis.utils.IngameUpdateChecker
 import de.bypixeltv.skredis.utils.UpdateChecker
+import dev.jorel.commandapi.CommandAPI
+import dev.jorel.commandapi.CommandAPIBukkitConfig
 import net.axay.kspigot.main.KSpigot
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -50,14 +52,15 @@ class Main : KSpigot() {
         instance = this
     }
 
+    override fun load() {
+        CommandAPI.onLoad(CommandAPIBukkitConfig(this).silentLogs(true).verboseOutput(true).setNamespace("skredis"))
+        Commands()
+    }
+
     @Suppress("DEPRECATION")
     override fun startup() {
         saveDefaultConfig()
-
-        val commands = Commands()
-
-        this.getCommand("skredis")?.setExecutor(commands)
-        this.getCommand("skredis")?.tabCompleter = commands
+        CommandAPI.onEnable()
 
         INSTANCE = this
         this.instance = this

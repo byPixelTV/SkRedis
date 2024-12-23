@@ -1,45 +1,55 @@
+import net.minecrell.pluginyml.paper.PaperPluginDescription
+
 plugins {
-    kotlin("jvm") version "2.0.21"
-    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("com.gradleup.shadow") version "8.3.5"
+    kotlin("jvm") version "2.1.0"
+    id("net.minecrell.plugin-yml.paper") version "0.6.0"
+    id("com.gradleup.shadow") version "9.0.0-beta4"
 }
 
-val versionString = "1.0.4"
+
+val versionString = "1.1.0"
 
 group = "de.bypixeltv"
 version = versionString
 
 repositories {
     mavenCentral()
+
     maven("https://jitpack.io")
-    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
+
     maven {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
+
     maven {
         url = uri("https://repo.skriptlang.org/releases")
     }
 }
 
-dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.21.3-R0.1-SNAPSHOT")
+val commandAPIVersion = "9.7.0"
 
-    bukkitLibrary("net.kyori:adventure-platform-bukkit:4.3.4")
-    bukkitLibrary("net.kyori:adventure-text-minimessage:4.17.0")
-    bukkitLibrary("net.axay:kspigot:1.21.0")
+dependencies {
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+
+    library("dev.jorel:commandapi-bukkit-shade-mojang-mapped:$commandAPIVersion")
+    library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
+    library("net.kyori:adventure-platform-bukkit:4.3.4")
+    library("net.kyori:adventure-text-minimessage:4.17.0")
 
     compileOnly("com.github.SkriptLang:Skript:2.9.4")
-
-    bukkitLibrary("redis.clients:jedis:5.2.0")
-
     implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
+
+    library("net.axay:kspigot:1.21.0")
+    library("redis.clients:jedis:5.2.0")
+
+    library(kotlin("stdlib"))
 }
 
 sourceSets {
     getByName("main") {
         java {
-            srcDir("src/main/java")
+            srcDir("src/main/kotlin")
         }
         kotlin {
             srcDir("src/main/kotlin")
@@ -64,30 +74,42 @@ tasks {
     }
 }
 
-bukkit {
+tasks.jar {
+    manifest {
+        attributes["paperweight-mappings-namespace"] = "mojang"
+    }
+}
+
+// if you have shadowJar configured
+tasks.shadowJar {
+    manifest {
+        attributes["paperweight-mappings-namespace"] = "mojang"
+    }
+}
+
+paper {
     main = "de.bypixeltv.skredis.Main"
 
-    version = versionString
+    loader = "de.bypixeltv.skredis.SkRedisPluginLoader"
+    hasOpenClassloader = false
 
-    foliaSupported = true
-
-    apiVersion = "1.13"
+    generateLibrariesJson = true
 
     authors = listOf("byPixelTV")
 
-    website = "https://bypixeltv.de"
+    apiVersion = "1.21.4"
 
-    description = "The modern way to use Redis with Skript."
+    version = versionString
 
-    depend = listOf("Skript")
+    foliaSupported = false
 
     prefix = "SkRedis"
 
-    commands {
-        register("skredis") {
-            description = "Main command for SkRedis"
-            permission = "skredis.admin"
-            usage = "/skredis <info|version|reload|reloadredis>"
+    serverDependencies {
+        // During server run time, require Skript, add it to the classpath, and load it before us
+        register("Skript") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            joinClasspath = true
         }
     }
 }
