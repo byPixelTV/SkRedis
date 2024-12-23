@@ -35,7 +35,7 @@ dependencies {
     library("dev.jorel:commandapi-bukkit-shade-mojang-mapped:$commandAPIVersion")
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
     library("net.kyori:adventure-platform-bukkit:4.3.4")
-    library("net.kyori:adventure-text-minimessage:4.17.0")
+    library("net.kyori:adventure-text-minimessage:4.18.0")
 
     compileOnly("com.github.SkriptLang:Skript:2.9.4")
     implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
