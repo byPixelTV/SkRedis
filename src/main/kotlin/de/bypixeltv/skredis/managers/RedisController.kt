@@ -135,18 +135,23 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
             if (!config.getBoolean("redivelocity.use-json")) {
                 when (j.getString("action")) {
                     "serverSwitch", "postLogin", "disconnect" -> {
-                        val ipaddress = j.getString("ipadress")
-                        val username = j.getString("username")
+                        val ipaddress = j.getString("address")
+                        val username = j.getString("name")
                         val uuid = j.getString("uuid")
-                        val clientbrand = j.getString("clientbrand")
+                        val timestamp = j.getString("timestamp")
+                        val clientbrand = try {
+                             j.getString("clientbrand")
+                        } catch (e: Exception) {
+                            "unknown"
+                        }
                         val proxyid = try {
                             j.getString("proxyid")
                         } catch (e: Exception) {
                             "unknown"
                         }
-                        val messages = "$proxyid;$username;$uuid;$clientbrand;$ipaddress"
+                        val messages = "$proxyid;$username;$uuid;$ipaddress;$clientbrand;$timestamp"
                         val date = System.currentTimeMillis()
-                        val eventrv = RedisMessageEvent(channel, "redisvelocity:${j.getString("action")};$messages", date)
+                        val eventrv = RedisMessageEvent(channel, "redivelocity:${j.getString("action")};$messages", date)
                         var eventrb: RedisMessageEvent? = null
                         when (j.getString("action")) {
                             "serverSwitch" -> {
