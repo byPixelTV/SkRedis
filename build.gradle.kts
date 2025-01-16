@@ -37,7 +37,7 @@ dependencies {
     library("net.kyori:adventure-platform-bukkit:4.3.4")
     library("net.kyori:adventure-text-minimessage:4.18.0")
 
-    compileOnly("com.github.SkriptLang:Skript:2.9.5")
+    compileOnly("com.github.SkriptLang:Skript:2.10.0")
     implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
 
     library("net.axay:kspigot:1.21.0")
