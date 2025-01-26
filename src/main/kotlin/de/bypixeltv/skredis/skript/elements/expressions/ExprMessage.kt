@@ -1,6 +1,5 @@
 package de.bypixeltv.skredis.skript.elements.expressions
 
-import ch.njol.skript.ScriptLoader
 import ch.njol.skript.Skript
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.ExpressionType
@@ -33,7 +32,7 @@ class ExprMessage : SimpleExpression<String>() {
         isDelayed: Kleenean?,
         parseResult: SkriptParser.ParseResult?
     ): Boolean {
-        if (!ScriptLoader.isCurrentEvent(RedisMessageEvent::class.java)) {
+        if (!parser.isCurrentEvent(RedisMessageEvent::class.java)) {
             Skript.error("Cannot use 'redis message' outside of a redis message event", ErrorQuality.SEMANTIC_ERROR)
             return false
         }
