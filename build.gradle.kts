@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm") version "2.1.0"
     id("net.minecrell.plugin-yml.paper") version "0.6.0"
     id("com.gradleup.shadow") version "9.0.0-SNAPSHOT"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
 }
 
 
@@ -30,7 +31,7 @@ repositories {
 val commandAPIVersion = "9.7.0"
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
 
     library("dev.jorel:commandapi-bukkit-shade-mojang-mapped:$commandAPIVersion")
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
@@ -73,6 +74,8 @@ tasks {
         archiveClassifier.set("")
     }
 }
+
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 tasks.jar {
     manifest {
