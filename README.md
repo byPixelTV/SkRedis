@@ -18,8 +18,8 @@
 ### 📑 Requirements
 
 * **Java 21+**
-* **Skript 2.9.4**
-* **Minecraft 1.21**
+* **Skript 2.10.1**
+* **Paper 1.21.4**
 
 ### 🆘 Where can I get help?
 
