@@ -5,7 +5,8 @@ import ch.njol.skript.util.Version
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import de.bypixeltv.skredis.Main
-import de.bypixeltv.skredis.managers.RedisMessageManager
+import de.bypixeltv.skredis.jedisWrapper.RedisController
+import de.bypixeltv.skredis.jedisWrapper.RedisMessageManager
 import de.bypixeltv.skredis.utils.UpdateChecker
 import de.bypixeltv.skredis.utils.UpdateChecker.Companion.getLatestReleaseVersion
 import dev.jorel.commandapi.kotlindsl.anyExecutor
@@ -85,26 +86,6 @@ class Commands {
                     Main.INSTANCE.saveDefaultConfig()
                 }
                 player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> <color:#43fa00>Successfully reloaded the config!</color>"))
-            }
-        }
-        literalArgument("reloadredis") {
-            withPermission("skredis.admin.reloadredis")
-            anyExecutor { player, _ ->
-                Main.INSTANCE.reloadConfig()
-                val path = Paths.get("/plugins/SkRedis/config.yml")
-                if (Files.exists(path)) {
-                    Main.INSTANCE.saveConfig()
-                } else {
-                    Main.INSTANCE.saveDefaultConfig()
-                }
-                try {
-                    RedisMessageManager.reloadRedisConnection()
-                    player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> <color:#43fa00>Successfully reloaded the redis connection!</color>"))
-                } catch (e: Exception) {
-                    player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> <red>Failed to reload the Redis connection!</red>"))
-                    e.printStackTrace()
-                    return@anyExecutor
-                }
             }
         }
     }

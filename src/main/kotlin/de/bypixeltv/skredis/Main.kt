@@ -3,8 +3,8 @@ package de.bypixeltv.skredis
 import ch.njol.skript.Skript
 import ch.njol.skript.SkriptAddon
 import de.bypixeltv.skredis.commands.Commands
-import de.bypixeltv.skredis.managers.RedisController
-import de.bypixeltv.skredis.managers.RedisMessageManager
+import de.bypixeltv.skredis.jedisWrapper.RedisController
+import de.bypixeltv.skredis.jedisWrapper.RedisMessageManager
 import de.bypixeltv.skredis.utils.IngameUpdateChecker
 import de.bypixeltv.skredis.utils.UpdateChecker
 import dev.jorel.commandapi.CommandAPI
@@ -35,6 +35,10 @@ class Main : KSpigot() {
 
     fun getRC(): RedisController? {
         return redisController
+    }
+
+    fun setRedisController(redisController: RedisController) {
+        this.redisController = redisController
     }
 
     fun getAdventure(): BukkitAudiences? {
@@ -93,6 +97,7 @@ class Main : KSpigot() {
     }
 
     override fun shutdown() {
+        RedisMessageManager.unsubscribe()
         if (redisController != null) {
             redisController!!.shutdown()
         }

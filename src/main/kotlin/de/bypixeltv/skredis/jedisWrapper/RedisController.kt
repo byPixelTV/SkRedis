@@ -1,7 +1,8 @@
-package de.bypixeltv.skredis.managers
+package de.bypixeltv.skredis.jedisWrapper
 
 import de.bypixeltv.skredis.Main
 import de.bypixeltv.skredis.events.RedisMessageEvent
+import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitTask
 import org.json.JSONArray
 import org.json.JSONObject
@@ -59,17 +60,18 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
         if (!isConnectionBroken.get() || isConnecting.get()) {
             return
         }
-        plugin.sendLogs("Connecting to Redis server...")
+        Bukkit.getLogger().info("Connecting to Redis server...")
         isConnecting.set(true)
         try {
             jedisPool.resource.use { _ ->
                 isConnectionBroken.set(false)
                 plugin.sendInfoLogs("Connection to Redis server has established! Success!")
+
             }
         } catch (e: Exception) {
             isConnecting.set(false)
             isConnectionBroken.set(true)
-            plugin.sendErrorLogs("Connection to Redis server has failed! Please check your details in the configuration.")
+            Bukkit.getLogger().info("Connection to Redis server has failed! Please check your details in the configuration.")
             e.printStackTrace()
         }
     }
@@ -80,7 +82,7 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
             try {
                 this.unsubscribe()
             } catch (e: Exception) {
-                plugin.sendErrorLogs("Something went wrong during unsubscribing...")
+                Bukkit.getLogger().info("Something went wrong during unsubscribing...")
                 e.printStackTrace()
             }
         }
@@ -107,7 +109,7 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
                         try {
                             jedis.publish(channel.toByteArray(StandardCharsets.UTF_8), message)
                         } catch (e: Exception) {
-                            plugin.sendErrorLogs("Error sending redis message!")
+                            Bukkit.getLogger().info("Error sending redis message!")
                             e.printStackTrace()
                         }
                     }
@@ -327,7 +329,6 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
         return fieldNames
     }
 
-
     private fun setupChannels(): Array<ByteArray> {
         val channels = Main.INSTANCE.config.getStringList("Channels")
 
@@ -336,6 +337,5 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
 
     fun getJedisPool(): JedisPool {
         return jedisPool
-    } //
-
+    }
 }
