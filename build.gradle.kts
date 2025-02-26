@@ -3,7 +3,7 @@ import net.minecrell.pluginyml.paper.PaperPluginDescription
 plugins {
     kotlin("jvm") version "2.1.10"
     id("net.minecrell.plugin-yml.paper") version "0.6.0"
-    id("com.gradleup.shadow") version "9.0.0-beta4"
+    id("com.gradleup.shadow") version "9.0.0-SNAPSHOT"
     id("io.papermc.paperweight.userdev") version "2.0.0-SNAPSHOT"
 }
 
