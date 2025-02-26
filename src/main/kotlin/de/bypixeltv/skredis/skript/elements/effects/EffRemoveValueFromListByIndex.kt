@@ -1,6 +1,10 @@
 package de.bypixeltv.skredis.skript.elements.effects
 
 import ch.njol.skript.Skript
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 import ch.njol.skript.lang.Effect
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
@@ -9,6 +13,10 @@ import de.bypixeltv.skredis.Main
 import org.bukkit.event.Event
 
 @Suppress("unused")
+@Name("Redis Lists - delete entry with index from redis list")
+@Description("Deletes the entry with the given index from the list stored in Redis.")
+@Examples("delete entry with index 2 from redis list \"myList\"")
+@Since("1.0.0")
 class EffRemoveValueFromListByIndex : Effect() {
 
     companion object{

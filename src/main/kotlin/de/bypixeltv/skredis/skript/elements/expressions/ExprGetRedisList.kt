@@ -8,8 +8,18 @@ import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.util.Kleenean
 import de.bypixeltv.skredis.Main
 import org.bukkit.event.Event
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 
 @Suppress("unused")
+@Name("Redis Lists - get redis list")
+@Description("Returns all values of a list stored in Redis.")
+@Examples("set {_list::*} to redis list \"myList\"",
+    "loop {_list::*}:",
+    "\tbroadcast \"Value: %loop-value%\"")
+@Since("1.0.0")
 class ExprGetRedisList : SimpleExpression<String>() {
 
     companion object{

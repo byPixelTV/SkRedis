@@ -8,8 +8,18 @@ import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.util.Kleenean
 import de.bypixeltv.skredis.Main
 import org.bukkit.event.Event
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 
 @Suppress("unused")
+@Name("Redis Hashes - get field names by value")
+@Description("Returns all field names of a hash stored in Redis that have the given value.")
+@Examples("set {_fields::*} to all field names of redis hash \"myHash\" with value \"myValue\"",
+    "loop {_fields::*}:",
+    "\tbroadcast \"Field: %loop-value%\"")
+@Since("1.0.0")
 class ExprGetHashFieldNamesByValue : SimpleExpression<String>() {
 
     companion object{

@@ -7,8 +7,16 @@ import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
 import de.bypixeltv.skredis.Main
 import org.bukkit.event.Event
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 
 @Suppress("unused")
+@Name("Redis Strings - set redis string")
+@Description("Sets a string that is stored in Redis to a specific value.")
+@Examples("set redis string \"myString\" to \"Hello World!\"")
+@Since("1.0.0")
 class EffSetRedisString : Effect() {
 
     companion object{

@@ -3,7 +3,7 @@ import net.minecrell.pluginyml.paper.PaperPluginDescription
 plugins {
     kotlin("jvm") version "2.1.10"
     id("net.minecrell.plugin-yml.paper") version "0.6.0"
-    id("com.gradleup.shadow") version "9.0.0-SNAPSHOT"
+    id("com.gradleup.shadow") version "9.0.0-beta4"
     id("io.papermc.paperweight.userdev") version "2.0.0-SNAPSHOT"
 }
 
@@ -37,14 +37,16 @@ dependencies {
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
     library("net.kyori:adventure-platform-bukkit:4.3.4")
     library("net.kyori:adventure-text-minimessage:4.19.0")
-
-    compileOnly("com.github.SkriptLang:Skript:2.10.1")
-    implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
-
+    library("org.yaml:snakeyaml:2.4")
     library("net.axay:kspigot:1.21.0")
     library("redis.clients:jedis:5.2.0")
-
     library(kotlin("stdlib"))
+
+    compileOnly("com.github.SkriptLang:Skript:2.10.1")
+
+    library("org.jetbrains.kotlin:kotlin-reflect:2.1.10")
+
+    implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
 }
 
 sourceSets {

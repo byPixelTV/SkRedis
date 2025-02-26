@@ -1,6 +1,10 @@
 package de.bypixeltv.skredis.skript.elements.effects
 
 import ch.njol.skript.Skript
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 import ch.njol.skript.lang.Effect
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
@@ -9,11 +13,15 @@ import de.bypixeltv.skredis.Main
 import org.bukkit.event.Event
 
 @Suppress("unused")
+@Name("Redis Pub/Sub - send redis message")
+@Description("Sends a message to a specific channel in Redis.")
+@Examples("send redis message \"Foo\" to channel \"Bar\"")
+@Since("1.0.0")
 class EffSendMessage : Effect() {
 
     companion object{
         init {
-            Skript.registerEffect(EffSendMessage::class.java, "send redis message[s] %strings% to [channel] %string%")
+            Skript.registerEffect(EffSendMessage::class.java, "send redis message %string% to [channel] %string%")
         }
     }
 
@@ -43,9 +51,9 @@ class EffSendMessage : Effect() {
         val plugin = Main.INSTANCE
 
 
-        val message = message!!.getAll(event)
+        val message = message!!.getSingle(event)
         val channel = channel!!.getSingle(event)
-        if (message[0] == null) {
+        if (message == null) {
             plugin.sendErrorLogs("Message was empty. Please check your code.")
             return
         }
@@ -54,7 +62,7 @@ class EffSendMessage : Effect() {
             return
         }
         try {
-            plugin.getRC()?.sendMessage(message, channel)
+            plugin.getRC()?.sendMessage(message.toString(), channel)
         } catch (e: Exception) {
             plugin.sendErrorLogs("An error occurred while sending the message to the Redis server.")
             e.printStackTrace()

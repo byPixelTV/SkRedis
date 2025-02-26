@@ -9,8 +9,18 @@ import ch.njol.skript.log.ErrorQuality
 import ch.njol.util.Kleenean
 import de.bypixeltv.skredis.events.RedisMessageEvent
 import org.bukkit.event.Event
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 
 @Suppress("unused")
+@Name("Redis Message Event - get redis channel")
+@Description("Returns the channel name of the Redis message event.", "This can only be used in the Redis Message Event.")
+@Examples("on redis message:",
+    "\tset {_channel} to redis channel",
+    "\tbroadcast \"Got message from channel %{_channel}%\"")
+@Since("1.0.0")
 class ExprChannel : SimpleExpression<String>() {
 
     companion object{

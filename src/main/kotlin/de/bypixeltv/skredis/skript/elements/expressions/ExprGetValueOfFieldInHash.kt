@@ -8,8 +8,17 @@ import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.util.Kleenean
 import de.bypixeltv.skredis.Main
 import org.bukkit.event.Event
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 
 @Suppress("unused")
+@Name("Redis Hashes - get value of field in redis hash")
+@Description("Returns the value of a field stored in a hash that is stored Redis.")
+@Examples("set {_value} to value of field \"myField\" in redis hash \"myHash\"",
+    "broadcast \"Value: %{_value}%\"")
+@Since("1.0.0")
 class ExprGetValueOfFieldInHash : SimpleExpression<String>() {
 
     companion object{

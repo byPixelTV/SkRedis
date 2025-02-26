@@ -5,6 +5,7 @@ import ch.njol.skript.util.Version
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import de.bypixeltv.skredis.Main
+import de.bypixeltv.skredis.config.ConfigLoader
 import de.bypixeltv.skredis.jedisWrapper.RedisController
 import de.bypixeltv.skredis.jedisWrapper.RedisMessageManager
 import de.bypixeltv.skredis.utils.UpdateChecker
@@ -42,7 +43,7 @@ class Commands {
                     if (addonMessages.isNotEmpty()) addonMessages.joinToString("\n") else "<color:#ff0000>No other addons found</color>"
                 player.sendMessage(
                     miniMessages.deserialize(
-                        "<dark_grey>--- <aqua>SkRedis</aqua> <grey>Info:</grey> ---</dark_grey>\n\n<grey>SkRedis Version: <aqua>${Main.INSTANCE.description.version}</aqua>\nSkript Version: <aqua>${Skript.getInstance().description.version}</aqua>\nServer Version: <aqua>${Main.INSTANCE.server.minecraftVersion}</aqua>\nServer Implementation: <aqua>${Main.INSTANCE.server.version}</aqua>\nAddons:\n$addonsList</grey>"
+                        "<dark_grey>--- <aqua>SkRedis</aqua> <grey>Info:</grey> ---</dark_grey>\n\n<grey>SkRedis Version: <aqua>${Main.INSTANCE.description.version}</aqua>\nSkript Version: <aqua>${Skript.getInstance().description.version}</aqua>\nServer Version: <aqua>${Main.INSTANCE.server.minecraftVersion}</aqua>\nServer Implementation: <aqua>${Bukkit.getVersion()}</aqua>\nAddons:\n$addonsList</grey>"
                     )
                 )
             }
@@ -78,14 +79,8 @@ class Commands {
         literalArgument("reload") {
             withPermission("skredis.admin.reload")
             anyExecutor { player, _ ->
-                Main.INSTANCE.reloadConfig()
-                val path = Paths.get("/plugins/SkRedis/config.yml")
-                if (Files.exists(path)) {
-                    Main.INSTANCE.saveConfig()
-                } else {
-                    Main.INSTANCE.saveDefaultConfig()
-                }
-                player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> <color:#43fa00>Successfully reloaded the config!</color>"))
+                ConfigLoader.reload()
+                player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> <yellow>Reloading the config... Watch the console and check if errors occur</yellow>"))
             }
         }
     }

@@ -1,6 +1,10 @@
 package de.bypixeltv.skredis.skript.elements.effects
 
 import ch.njol.skript.Skript
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 import ch.njol.skript.lang.Effect
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
@@ -9,6 +13,10 @@ import de.bypixeltv.skredis.Main
 import org.bukkit.event.Event
 
 @Suppress("unused")
+@Name("Redis Lists - add value to redis list")
+@Description("Adds a value to a specific list stored in Redis")
+@Examples("add \"Hello\" to redis list \"myList\"")
+@Since("1.0.0")
 class EffAddValueToRedisList : Effect() {
 
     companion object{

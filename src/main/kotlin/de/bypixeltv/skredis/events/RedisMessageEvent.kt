@@ -3,7 +3,7 @@ package de.bypixeltv.skredis.events
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class RedisMessageEvent(val channelName: String, val message: String, val date: Long) : Event(true) {
+class RedisMessageEvent(val channelName: String, val message: String, val date: Long, val isFromProxy: Boolean) : Event(true) {
     companion object {
         @JvmStatic
         val HANDLERS: HandlerList = HandlerList()

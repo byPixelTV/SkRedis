@@ -3,6 +3,7 @@ package de.bypixeltv.skredis
 import ch.njol.skript.Skript
 import ch.njol.skript.SkriptAddon
 import de.bypixeltv.skredis.commands.Commands
+import de.bypixeltv.skredis.config.ConfigLoader
 import de.bypixeltv.skredis.jedisWrapper.RedisController
 import de.bypixeltv.skredis.jedisWrapper.RedisMessageManager
 import de.bypixeltv.skredis.utils.IngameUpdateChecker
@@ -22,23 +23,19 @@ class Main : KSpigot() {
     private var adventure: BukkitAudiences? = null
 
     fun sendLogs(message: String) {
-        this.adventure?.server(server.name)?.sendMessage(miniMessages.deserialize("<grey>[<aqua>SkRedis</aqua>]</grey> <yellow>$message</yellow>"))
+        server.consoleSender.sendMessage(miniMessages.deserialize("<grey>[<aqua>SkRedis</aqua>]</grey> <yellow>$message</yellow>"))
     }
 
     fun sendInfoLogs(message: String) {
-        this.adventure?.server(server.name)?.sendMessage(miniMessages.deserialize("<grey>[<aqua>SkRedis</aqua>]</grey> <green>$message</green>"))
+        server.consoleSender.sendMessage(miniMessages.deserialize("<grey>[<aqua>SkRedis</aqua>]</grey> <green>$message</green>"))
     }
 
     fun sendErrorLogs(message: String) {
-        this.adventure?.server(server.name)?.sendMessage(miniMessages.deserialize("<grey>[<aqua>SkRedis</aqua>]</grey> <red>$message</red>"))
+        server.consoleSender.sendMessage(miniMessages.deserialize("<grey>[<aqua>SkRedis</aqua>]</grey> <red>$message</red>"))
     }
 
     fun getRC(): RedisController? {
         return redisController
-    }
-
-    fun setRedisController(redisController: RedisController) {
-        this.redisController = redisController
     }
 
     fun getAdventure(): BukkitAudiences? {
@@ -63,11 +60,12 @@ class Main : KSpigot() {
 
     @Suppress("DEPRECATION")
     override fun startup() {
-        saveDefaultConfig()
-        CommandAPI.onEnable()
-
         INSTANCE = this
         this.instance = this
+
+        ConfigLoader
+
+        CommandAPI.onEnable()
         this.addon = Skript.registerAddon(this)
         val localAddon = this.addon
 
@@ -79,7 +77,6 @@ class Main : KSpigot() {
 
         val version = description.version
         if (version.contains("-")) {
-            adventure?.server(server.name)?.sendMessage(miniMessages.deserialize("<yellow>This is a BETA build, things may not work as expected, please report any bugs on GitHub</yellow>"))
             adventure?.server(server.name)?.sendMessage(miniMessages.deserialize("<yellow>This is a BETA build, things may not work as expected, please report any bugs on GitHub</yellow>"))
             adventure?.server(server.name)?.sendMessage(miniMessages.deserialize("<yellow>https://github.com/byPixelTV/SkRedis/issues</yellow>"))
         }

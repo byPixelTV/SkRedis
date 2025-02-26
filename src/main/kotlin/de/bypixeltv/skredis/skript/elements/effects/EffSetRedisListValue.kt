@@ -1,6 +1,10 @@
 package de.bypixeltv.skredis.skript.elements.effects
 
 import ch.njol.skript.Skript
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 import ch.njol.skript.lang.Effect
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
@@ -9,6 +13,10 @@ import de.bypixeltv.skredis.Main
 import org.bukkit.event.Event
 
 @Suppress("unused")
+@Name("Redis Lists - set redis list value")
+@Description("Sets a specific index in a Redis list to a new value.", "It will overwrite the value at the given index.", "NOTE: If the index does not already exist, it will fail.")
+@Examples("set entry with index 2 in redis list \"myList\" to \"myNewValue\"")
+@Since("1.0.0")
 class EffSetRedisListValue : Effect() {
 
     companion object{

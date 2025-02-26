@@ -9,8 +9,18 @@ import ch.njol.skript.log.ErrorQuality
 import ch.njol.util.Kleenean
 import de.bypixeltv.skredis.events.RedisMessageEvent
 import org.bukkit.event.Event
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 
 @Suppress("unused")
+@Name("Redis Message Event - get redis message")
+@Description("Returns the message of the Redis message event.", "This can only be used in the Redis Message Event.")
+@Examples("on redis message:",
+    "\tset {_message} to redis message",
+    "\tbroadcast \"Got message: %{_message}%\"")
+@Since("1.0.0")
 class ExprMessage : SimpleExpression<String>() {
 
     companion object{

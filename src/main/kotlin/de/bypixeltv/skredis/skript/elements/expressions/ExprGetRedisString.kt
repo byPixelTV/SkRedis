@@ -8,8 +8,17 @@ import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.util.Kleenean
 import de.bypixeltv.skredis.Main
 import org.bukkit.event.Event
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 
 @Suppress("unused")
+@Name("Redis Strings - get redis string")
+@Description("Returns the string stored in Redis.")
+@Examples("set {_string} to redis string \"myString\"",
+    "broadcast \"Value: %{_string}%\"")
+@Since("1.0.0")
 class ExprGetRedisString : SimpleExpression<String>() {
 
     companion object{

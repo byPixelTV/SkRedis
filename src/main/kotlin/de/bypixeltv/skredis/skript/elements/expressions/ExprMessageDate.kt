@@ -10,15 +10,25 @@ import ch.njol.skript.util.Date
 import ch.njol.util.Kleenean
 import de.bypixeltv.skredis.events.RedisMessageEvent
 import org.bukkit.event.Event
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 
 @Suppress("unused")
+@Name("Redis Message event - message date")
+@Description("Returns the date of the Redis message event as unix timestamp.", "This can only be used in the Redis Message Event.")
+@Examples("on redis message:",
+    "\tset {_date} to redis message date",
+    "\tbroadcast \"Got message from channel %{_channel}% at %{_date}%\"")
+@Since("1.0.0")
 class ExprMessageDate : SimpleExpression<String>() {
 
     companion object{
         init {
             Skript.registerExpression(
                 ExprMessageDate::class.java, String::class.java,
-                ExpressionType.SIMPLE, "redis message date")
+                ExpressionType.SIMPLE, "redis message (date|timestamp|unix|time|unixtime|unix time)")
         }
     }
 
