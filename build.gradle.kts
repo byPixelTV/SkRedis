@@ -42,7 +42,7 @@ dependencies {
     library("redis.clients:jedis:5.2.0")
     library(kotlin("stdlib"))
 
-    compileOnly("com.github.SkriptLang:Skript:2.10.1")
+    compileOnly("com.github.SkriptLang:Skript:2.10.2")
 
     library("org.jetbrains.kotlin:kotlin-reflect:2.1.10")
 
