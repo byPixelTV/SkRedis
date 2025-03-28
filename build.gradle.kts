@@ -8,7 +8,7 @@ plugins {
 }
 
 
-val versionString = "1.1.0"
+val versionString = "1.1.1-BETA"
 
 group = "de.bypixeltv"
 version = versionString

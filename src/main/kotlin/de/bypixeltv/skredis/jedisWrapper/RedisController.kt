@@ -34,23 +34,42 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
         jConfig.blockWhenExhausted = true
 
         val password = configLoader.config?.redis?.password ?: ""
-        jedisPool = if (password.isEmpty()) {
-            JedisPool(
-                jConfig,
-                configLoader.config?.redis?.host ?: "127.0.0.1",
-                configLoader.config?.redis?.port ?: 6379,
-                configLoader.config?.redis?.timeout ?: 9000,
-                configLoader.config?.redis?.useSsl == true
-            )
-        } else {
-            JedisPool(
-                jConfig,
-                configLoader.config?.redis?.host ?: "127.0.0.1",
-                configLoader.config?.redis?.port ?: 6379,
-                configLoader.config?.redis?.timeout ?: 9000,
-                password,
-                configLoader.config?.redis?.useSsl == true
-            )
+        val username = configLoader.config?.redis?.username
+        val useUsername = username != null && username != "default" && username.isNotEmpty()
+
+        jedisPool = when {
+            useUsername && password.isNotEmpty() -> {
+                JedisPool(
+                    jConfig,
+                    configLoader.config?.redis?.host ?: "127.0.0.1",
+                    configLoader.config?.redis?.port ?: 6379,
+                    configLoader.config?.redis?.timeout ?: 9000,
+                    username,
+                    password,
+                    configLoader.config?.redis?.useSsl == true
+                )
+            }
+            password.isNotEmpty() -> {
+                JedisPool(
+                    jConfig,
+                    configLoader.config?.redis?.host ?: "127.0.0.1",
+                    configLoader.config?.redis?.port ?: 6379,
+                    configLoader.config?.redis?.timeout ?: 9000,
+                    password,
+                    0, // Standard-Datenbank
+                    configLoader.config?.redis?.useSsl == true
+                )
+            }
+            else -> {
+                JedisPool(
+                    jConfig,
+                    configLoader.config?.redis?.host ?: "127.0.0.1",
+                    configLoader.config?.redis?.port ?: 6379,
+                    configLoader.config?.redis?.timeout ?: 9000,
+                    null,
+                    configLoader.config?.redis?.useSsl == true
+                )
+            }
         }
 
         channelsInByte = setupChannels()
