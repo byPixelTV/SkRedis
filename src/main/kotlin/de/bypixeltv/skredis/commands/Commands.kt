@@ -6,7 +6,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import de.bypixeltv.skredis.Main
 import de.bypixeltv.skredis.config.ConfigLoader
-import de.bypixeltv.skredis.jedisWrapper.RedisController
 import de.bypixeltv.skredis.jedisWrapper.RedisMessageManager
 import de.bypixeltv.skredis.utils.UpdateChecker
 import de.bypixeltv.skredis.utils.UpdateChecker.Companion.getLatestReleaseVersion
@@ -18,8 +17,6 @@ import org.bukkit.Bukkit
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
-import java.nio.file.Files
-import java.nio.file.Paths
 
 class Commands {
     private val miniMessages = MiniMessage.miniMessage()
@@ -82,6 +79,7 @@ class Commands {
                 ConfigLoader.reload()
                 Main.INSTANCE.getRC()?.shutdown()
                 Main.INSTANCE.setRedisController()
+                RedisMessageManager.restart()
                 player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> <yellow>Reloading the config... Watch the console and check if errors occur</yellow>"))
             }
         }

@@ -82,6 +82,7 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
             return
         }
         plugin.sendInfoLogs("<yellow>Connecting to Redis server...</yellow>")
+        RedisMessageManager.restart()
         isConnecting.set(true)
         try {
             jedisPool.resource.use { _ ->

@@ -4,9 +4,7 @@ plugins {
     kotlin("jvm") version "2.1.20"
     id("net.minecrell.plugin-yml.paper") version "0.6.0"
     id("com.gradleup.shadow") version "9.0.0-SNAPSHOT"
-    id("io.papermc.paperweight.userdev") version "2.0.0-SNAPSHOT"
 }
-
 
 val versionString = "1.1.1-BETA"
 
@@ -31,7 +29,7 @@ repositories {
 val commandAPIVersion = "9.7.0"
 
 dependencies {
-    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
 
     library("dev.jorel:commandapi-bukkit-shade-mojang-mapped:$commandAPIVersion")
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
@@ -66,8 +64,6 @@ tasks {
         options.release.set(21)
     }
 
-    named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask::class.java)
-
     shadowJar {
         relocate("com.tcoded.folialib", "de.bypixeltv.skredis.lib.folialib")
 
@@ -76,8 +72,6 @@ tasks {
         archiveClassifier.set("")
     }
 }
-
-paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 tasks.jar {
     manifest {

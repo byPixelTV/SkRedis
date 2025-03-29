@@ -86,7 +86,7 @@ class Main : KSpigot() {
         }
 
         UpdateChecker.checkForUpdate(version)
-        RedisMessageManager
+        RedisMessageManager.initialize()
 
         adventure?.server(server.name)?.sendMessage(miniMessages.deserialize("<gray>[<aqua>SkRedis</aqua>]</gray> <yellow>Successfully enabled SkRedis!</yellow>"))
 
