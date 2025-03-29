@@ -80,6 +80,8 @@ class Commands {
             withPermission("skredis.admin.reload")
             anyExecutor { player, _ ->
                 ConfigLoader.reload()
+                Main.INSTANCE.getRC()?.shutdown()
+                Main.INSTANCE.setRedisController()
                 player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> <yellow>Reloading the config... Watch the console and check if errors occur</yellow>"))
             }
         }
