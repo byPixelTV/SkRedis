@@ -92,6 +92,8 @@ object ConfigLoader {
                 config?.let { config ->
                     writer.write("# This is the internal version of the config, DO NOT MODIFY THIS VALUE\n")
                     writer.write("configVersion: ${config.configVersion}\n\n")
+                    writer.write("# whether players with the permission 'skredis.admin.version' should be notified if there is an update.\n")
+                    writer.write("updateChecker: ${config.updateChecker}\n\n")
 
                     writer.write("# Redis configuration\n")
                     writer.write("redis:\n")
