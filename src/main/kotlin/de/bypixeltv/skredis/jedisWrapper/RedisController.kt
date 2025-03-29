@@ -8,6 +8,7 @@ import de.bypixeltv.skredis.utils.JsonUtil.wrap
 import org.bukkit.scheduler.BukkitTask
 import org.json.JSONObject
 import redis.clients.jedis.BinaryJedisPubSub
+import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
 import redis.clients.jedis.exceptions.JedisConnectionException
@@ -109,6 +110,27 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
         jedisPool.close()
     }
 
+    private fun <T> withJedis(action: (jedis: Jedis) -> T): T? {
+        if (isConnectionBroken.get()) {
+            return null
+        }
+
+        try {
+            return jedisPool.resource.use { jedis ->
+                action(jedis)
+            }
+        } catch (_: JedisConnectionException) {
+            handleConnectionFailure()
+            return null
+        }
+    }
+
+    private fun handleConnectionFailure() {
+        isConnectionBroken.set(true)
+        isConnecting.set(false)
+        plugin.sendInfoLogs("<red>The connection to Redis was interrupted. Trying to reconnect...</red>")
+    }
+
     fun sendMessage(message: String, channel: String) {
         try {
             val formattedMessage = if (configLoader.config?.redis?.useCustomMessageFormat == true) {
@@ -149,7 +171,7 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
                     }
                 })
             } else {
-                // Execute sending of a redis message on the main thread if plugin is disabling
+                // Execute sending of a redis message on the main thread if the plugin is disabling
                 // So it can still process the sending
                 jedisPool.resource.use { jedis ->
                     try {
@@ -206,7 +228,7 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
     }
 
     fun setHashField(hashName: String, fieldName: String, value: String) {
-        jedisPool.resource.use { jedis ->
+        withJedis { jedis ->
             val type = jedis.type(hashName)
             if (type != "hash") {
                 if (type == "none") {
@@ -221,19 +243,19 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
     }
 
     fun deleteHashField(hashName: String, fieldName: String) {
-        jedisPool.resource.use { jedis ->
+        withJedis { jedis ->
             jedis.hdel(hashName, fieldName)
         }
     }
 
     fun deleteHash(hashName: String) {
-        jedisPool.resource.use { jedis ->
+        withJedis { jedis ->
             jedis.del(hashName)
         }
     }
 
     fun addToList(listName: String, values: Array<String>) {
-        jedisPool.resource.use { jedis ->
+        withJedis { jedis ->
             values.forEach { value ->
                 jedis.rpush(listName, value)
             }
@@ -241,7 +263,7 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
     }
 
     fun setListValue(listName: String, index: Int, value: String) {
-        jedisPool.resource.use { jedis ->
+        withJedis { jedis ->
             val listLength = jedis.llen(listName)
             if (index >= listLength) {
                 System.err.println("Error: Index $index does not exist in the list $listName.")
@@ -252,7 +274,7 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
     }
 
     fun removeFromList(listName: String, index: Int) {
-        jedisPool.resource.use { jedis ->
+        withJedis { jedis ->
             val listLength = jedis.llen(listName)
             if (index >= listLength) {
                 System.err.println("Error: Index $index does not exist in the list $listName.")
@@ -265,62 +287,62 @@ class RedisController(private val plugin: Main) : BinaryJedisPubSub(), Runnable 
     }
 
     fun removeFromListByValue(listName: String, value: String) {
-        jedisPool.resource.use { jedis ->
+        withJedis { jedis ->
             jedis.lrem(listName, 0, value)
         }
     }
 
     fun deleteList(listName: String) {
-        jedisPool.resource.use { jedis ->
+        withJedis { jedis ->
             jedis.del(listName)
         }
     }
 
     fun setString(key: String, value: String) {
-        jedisPool.resource.use { jedis ->
+        withJedis { jedis ->
             jedis.set(key, value)
         }
     }
 
     fun getString(key: String): String? {
-        return jedisPool.resource.use { jedis ->
+        return withJedis { jedis ->
             jedis.get(key)
         }
     }
 
     fun deleteString(key: String) {
-        jedisPool.resource.use { jedis ->
+        withJedis { jedis ->
             jedis.del(key)
         }
     }
 
     fun getHashField(hashName: String, fieldName: String): String? {
-        return jedisPool.resource.use { jedis ->
+        return withJedis { jedis ->
             jedis.hget(hashName, fieldName)
         }
     }
 
     fun getAllHashFields(hashName: String): Set<String>? {
-        return jedisPool.resource.use { jedis ->
+        return withJedis { jedis ->
             jedis.hkeys(hashName)
         }
     }
 
     fun getAllHashValues(hashName: String): List<String>? {
-        return jedisPool.resource.use { jedis ->
+        return withJedis { jedis ->
             jedis.hvals(hashName)
         }
     }
 
     fun getList(listName: String): List<String>? {
-        return jedisPool.resource.use { jedis ->
+        return withJedis { jedis ->
             jedis.lrange(listName, 0, -1)
         }
     }
 
     fun getHashFieldNamesByValue(hashName: String, value: String): List<String> {
         val fieldNames = mutableListOf<String>()
-        jedisPool.resource.use { jedis ->
+        withJedis { jedis ->
             val keys = jedis.keys(hashName)
             for (key in keys) {
                 val fieldsAndValues = jedis.hgetAll(key)

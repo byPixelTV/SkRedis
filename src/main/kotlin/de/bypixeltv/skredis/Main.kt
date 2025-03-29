@@ -42,6 +42,10 @@ class Main : KSpigot() {
         return adventure
     }
 
+    fun setRedisController() {
+        redisController = RedisController(this)
+    }
+
     private var instance: Main? = null
     private var addon: SkriptAddon? = null
 
