@@ -34,7 +34,7 @@ dependencies {
     library("dev.jorel:commandapi-bukkit-shade-mojang-mapped:$commandAPIVersion")
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
     library("net.kyori:adventure-platform-bukkit:4.3.4")
-    library("net.kyori:adventure-text-minimessage:4.19.0")
+    library("net.kyori:adventure-text-minimessage:4.20.0")
     library("org.yaml:snakeyaml:2.4")
     library("net.axay:kspigot:1.21.0")
     library("redis.clients:jedis:5.2.0")
