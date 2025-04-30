@@ -37,7 +37,7 @@ dependencies {
     library("net.kyori:adventure-text-minimessage:4.21.0")
     library("org.yaml:snakeyaml:2.4")
     library("net.axay:kspigot:1.21.0")
-    library("redis.clients:jedis:5.2.0")
+    library("redis.clients:jedis:6.0.0")
     library(kotlin("stdlib"))
 
     compileOnly("com.github.SkriptLang:Skript:2.11.0")
