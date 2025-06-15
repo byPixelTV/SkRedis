@@ -1,4 +1,14 @@
 <div align="center">
+<a href="https://papermc.io/" target="_blank">
+  <img src="https://cdn.bypixel.dev/raw/4IEdXg.png" height="64" alt="paper logo" />
+</a>
+<a href="https://purpurmc.org/" target="_blank">
+  <img src="https://cdn.bypixel.dev/raw/5nKJA5.png" height="64" alt="purpur logo" />
+</a>
+<a href="https://modrinth.com/plugin/skredis" target="_blank">
+  <img src="https://cdn.bypixel.dev/raw/sDbBd9.png" height="64" alt="modrinth logo" />
+</a>
+
 
 ![Jenkins Build](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.bypixel.dev%2Fjob%2Fskredis%2F&style=for-the-badge)
 ![GitHub issues](https://img.shields.io/github/issues-raw/byPixelTV/skRedis?style=for-the-badge)
@@ -8,21 +18,43 @@
 
 <br />
 
-[//]: # (<- Header ->)
-<h1 align="center">SkRedis</h1>
+<div>
+<h1 align="center">SkRedis 📊</h1>
 
 <h3 align="center">The modern way to use Redis with Skript!</h3>
-<h6 align="center">This Skript-Addon allows you to interact with Redis!</h6>
-
-[![SkriptHubViewTheDocs](http://skripthub.net/static/addon/ViewTheDocsButton.png)](http://skripthub.net/docs/?addon=SkRedis)
 <hr>
 
-### 📑 Requirements
+<div>
 
-* **Java 21+**
-* **Skript 2.11.2**
-* **Paper 1.21.5**
+> 
+> # ⛏️ Minecraft Support 🎮:
+> - SkRedis is only compatible with Minecraft version **1.21.5**
+> - I will only support the latest release of Minecraft, this mean that **1.21.5 is** supported, but **1.21.1 isn't!** If you want to get official support, you have to use the latest version of **Skript, SkRedis and Minecraft!**
+</div>
 
-### 🆘 Where can I get help?
+</div>
 
-* **[Discord](https://bypixeltv.de)**
+<div align="center">
+  <a href="https://discord.gg/yVp7Qvhj9k" target="_blank">
+    <img src="https://cdn.bypixel.dev/raw/XQWtxy.png" height="64" alt="discord logo" />
+  </a>
+  <a href="https://skripthub.net/docs/?addon=SkRedis" target="_blank">
+    <img src="https://skripthub.net/static/addon/ViewTheDocsButton.png" height="64" alt="skripthub logo" />
+  </a>
+</div>
+<hr>
+
+<div>
+
+> 
+> # 💻 Development Builds 🌐:
+> - **Development  Builds:** https://ci.bypixel.dev/job/skredis/
+</div>
+
+<div align="center">
+  <h3 align="center">Uses modern technology 🚀</h3>
+  <img src="https://cdn.bypixel.dev/raw/1g0lFi.png" height="64" alt="kotlin" />
+  <img src="https://cdn.bypixel.dev/raw/bOPP8Z.png" height="64" alt="gradle" />
+  <img src="https://cdn.bypixel.dev/raw/9dl4RX.png" height="64" alt="no-bukkit" />
+  <img src="https://cdn.bypixel.dev/raw/BKniis.png" height="64" alt="no-spigot" />
+</div>
