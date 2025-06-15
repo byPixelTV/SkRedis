@@ -2,13 +2,14 @@ import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
     kotlin("jvm") version "2.1.21"
-    id("net.minecrell.plugin-yml.paper") version "0.6.0"
+    id("de.eldoria.plugin-yml.paper") version "0.7.1"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
     id("com.gradleup.shadow") version "9.0.0-SNAPSHOT"
 }
 
-val versionString = "1.1.1-BETA"
+val versionString = "1.2.0"
 
-group = "de.bypixeltv"
+group = "dev.bypixel"
 version = versionString
 
 repositories {
@@ -27,20 +28,19 @@ repositories {
 }
 
 val commandAPIVersion = "10.0.1"
+val skriptVersion = "2.11.2"
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
 
     library("dev.jorel:commandapi-bukkit-shade-mojang-mapped:$commandAPIVersion")
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
-    library("net.kyori:adventure-platform-bukkit:4.4.0")
-    library("net.kyori:adventure-text-minimessage:4.21.0")
     library("org.yaml:snakeyaml:2.4")
     library("net.axay:kspigot:1.21.0")
     library("redis.clients:jedis:6.0.0")
     library(kotlin("stdlib"))
 
-    compileOnly("com.github.SkriptLang:Skript:2.11.2")
+    compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
     library("org.jetbrains.kotlin:kotlin-reflect:2.1.21")
 
@@ -65,12 +65,30 @@ tasks {
     }
 
     shadowJar {
-        relocate("com.tcoded.folialib", "de.bypixeltv.skredis.lib.folialib")
+        relocate("com.tcoded.folialib", "dev.bypixel.skredis.lib.folialib")
 
         archiveBaseName.set("SkRedis")
         archiveVersion.set(version.toString())
         archiveClassifier.set("")
     }
+
+    runServer {
+        minecraftVersion("1.21.5")
+
+        downloadPlugins {
+            url("https://github.com/SkriptLang/Skript/releases/download/$skriptVersion/Skript-${skriptVersion}.jar")
+            url("https://cdn.modrinth.com/data/P1OZGk5p/versions/c7qUCKzX/ViaVersion-5.4.0-SNAPSHOT.jar")
+            url("https://cdn.modrinth.com/data/NpvuJQoq/versions/dtrTeZLl/ViaBackwards-5.4.0-SNAPSHOT.jar")
+        }
+    }
+}
+
+tasks.withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
+    javaLauncher = javaToolchains.launcherFor {
+        vendor = JvmVendorSpec.JETBRAINS
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    jvmArgs("-XX:+AllowEnhancedClassRedefinition")
 }
 
 tasks.jar {
@@ -87,16 +105,16 @@ tasks.shadowJar {
 }
 
 paper {
-    main = "de.bypixeltv.skredis.Main"
+    main = "dev.bypixel.skredis.Main"
 
-    loader = "de.bypixeltv.skredis.SkRedisPluginLoader"
+    loader = "dev.bypixel.skredis.SkRedisPluginLoader"
     hasOpenClassloader = false
 
     generateLibrariesJson = true
 
     authors = listOf("byPixelTV")
 
-    apiVersion = "1.21.4"
+    apiVersion = "1.21.5"
 
     version = versionString
 
