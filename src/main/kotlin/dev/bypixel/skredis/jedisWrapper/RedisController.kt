@@ -115,9 +115,9 @@ class RedisController(private val plugin: JavaPlugin) : BinaryJedisPubSub(), Cor
     fun sendMessageAsync(message: String, channel: String): CompletableFuture<Void> {
         return CompletableFuture.runAsync {
             val json = JSONObject()
-            json.put("messages", message)
+            json.put("message", message)
             json.put("action", "skript")
-            json.put("date", System.currentTimeMillis())
+            json.put("timestamp", System.currentTimeMillis())
             finishSendMessageAsync(json, channel)
         }
     }
@@ -259,9 +259,9 @@ class RedisController(private val plugin: JavaPlugin) : BinaryJedisPubSub(), Cor
 
     fun sendMessage(message: String, channel: String) {
         val json = JSONObject()
-        json.put("messages", message)
+        json.put("message", message)
         json.put("action", "skript")
-        json.put("date", System.currentTimeMillis())
+        json.put("timestamp", System.currentTimeMillis())
         finishSendMessage(json, channel)
     }
 
