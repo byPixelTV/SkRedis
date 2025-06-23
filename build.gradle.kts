@@ -1,7 +1,7 @@
 import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
-    kotlin("jvm") version "2.1.21"
+    kotlin("jvm") version "2.2.0"
     id("de.eldoria.plugin-yml.paper") version "0.7.1"
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("com.gradleup.shadow") version "9.0.0-SNAPSHOT"
@@ -42,7 +42,7 @@ dependencies {
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
-    library("org.jetbrains.kotlin:kotlin-reflect:2.1.21")
+    library("org.jetbrains.kotlin:kotlin-reflect:2.2.0")
 
     implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
 }
