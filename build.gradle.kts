@@ -7,7 +7,7 @@ plugins {
     id("com.gradleup.shadow") version "9.0.0-SNAPSHOT"
 }
 
-val versionString = "1.2.1"
+val versionString = "1.2.2"
 
 group = "dev.bypixel"
 version = versionString
@@ -25,13 +25,18 @@ repositories {
     maven {
         url = uri("https://repo.skriptlang.org/releases")
     }
+
+    maven {
+        name = "tcoded-releases"
+        url = uri("https://repo.tcoded.com/releases")
+    }
 }
 
 val commandAPIVersion = "10.1.0"
 val skriptVersion = "2.11.2"
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.6-R0.1-SNAPSHOT")
 
     library("dev.jorel:commandapi-bukkit-shade-mojang-mapped:$commandAPIVersion")
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
@@ -44,7 +49,7 @@ dependencies {
 
     library("org.jetbrains.kotlin:kotlin-reflect:2.2.0")
 
-    implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
+    implementation("com.tcoded:FoliaLib:main-SNAPSHOT")
 }
 
 sourceSets {
@@ -114,7 +119,7 @@ paper {
 
     authors = listOf("byPixelTV")
 
-    apiVersion = "1.21.5"
+    apiVersion = "1.21.6"
 
     version = versionString
 
