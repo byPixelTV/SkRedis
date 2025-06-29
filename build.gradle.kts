@@ -49,7 +49,7 @@ dependencies {
 
     library("org.jetbrains.kotlin:kotlin-reflect:2.2.0")
 
-    implementation("com.tcoded:FoliaLib:main-SNAPSHOT")
+    implementation("com.tcoded:FoliaLib:0.5.1")
 }
 
 sourceSets {
