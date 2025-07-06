@@ -1,13 +1,13 @@
 import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
-    kotlin("jvm") version "2.1.21"
+    kotlin("jvm") version "2.2.0"
     id("de.eldoria.plugin-yml.paper") version "0.7.1"
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("com.gradleup.shadow") version "9.0.0-SNAPSHOT"
 }
 
-val versionString = "1.2.2-SNAPSHOT"
+val versionString = "1.2.3-SNAPSHOT"
 
 group = "dev.bypixel"
 version = versionString
@@ -27,8 +27,8 @@ repositories {
     }
 }
 
-val commandAPIVersion = "10.1.0"
-val skriptVersion = "2.11.2"
+val commandAPIVersion = "10.1.1"
+val skriptVersion = "2.12.0-pre1"
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
@@ -42,7 +42,7 @@ dependencies {
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
-    library("org.jetbrains.kotlin:kotlin-reflect:2.1.21")
+    library("org.jetbrains.kotlin:kotlin-reflect:2.2.0")
 }
 
 sourceSets {
