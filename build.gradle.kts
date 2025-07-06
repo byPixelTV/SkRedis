@@ -7,7 +7,7 @@ plugins {
     id("com.gradleup.shadow") version "9.0.0-SNAPSHOT"
 }
 
-val versionString = "1.2.1"
+val versionString = "1.2.2-SNAPSHOT"
 
 group = "dev.bypixel"
 version = versionString
@@ -27,11 +27,11 @@ repositories {
     }
 }
 
-val commandAPIVersion = "10.0.1"
+val commandAPIVersion = "10.1.0"
 val skriptVersion = "2.11.2"
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
 
     library("dev.jorel:commandapi-bukkit-shade-mojang-mapped:$commandAPIVersion")
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
@@ -43,8 +43,6 @@ dependencies {
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
     library("org.jetbrains.kotlin:kotlin-reflect:2.1.21")
-
-    implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
 }
 
 sourceSets {
@@ -114,7 +112,7 @@ paper {
 
     authors = listOf("byPixelTV")
 
-    apiVersion = "1.21.5"
+    apiVersion = "1.21.7"
 
     version = versionString
 

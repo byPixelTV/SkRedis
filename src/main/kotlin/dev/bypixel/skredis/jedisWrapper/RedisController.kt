@@ -26,7 +26,7 @@ class RedisController(private val plugin: JavaPlugin) : BinaryJedisPubSub(), Cor
     private var connectionJob: Job? = null
     private val configLoader = ConfigLoader
 
-    private val executor: ExecutorService = Executors.newCachedThreadPool()
+    private val executor: ExecutorService = Executors.newFixedThreadPool(15) // Maximal 10 gleichzeitige Tasks
 
     init {
         val jConfig = JedisPoolConfig()
