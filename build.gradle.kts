@@ -28,7 +28,7 @@ repositories {
 }
 
 val commandAPIVersion = "10.1.1"
-val skriptVersion = "2.12.0-pre1"
+val skriptVersion = "2.12.0-pre2"
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
