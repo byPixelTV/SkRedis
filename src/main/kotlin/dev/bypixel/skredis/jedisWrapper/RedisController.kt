@@ -13,9 +13,7 @@ import redis.clients.jedis.exceptions.JedisConnectionException
 import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.util.*
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 class RedisController(private val plugin: JavaPlugin) : BinaryJedisPubSub(), CoroutineScope by CoroutineScope(Dispatchers.Default) {
@@ -26,19 +24,21 @@ class RedisController(private val plugin: JavaPlugin) : BinaryJedisPubSub(), Cor
     private var connectionJob: Job? = null
     private val configLoader = ConfigLoader
 
-    private val executor: ExecutorService = Executors.newFixedThreadPool(15) // Maximal 10 gleichzeitige Tasks
+    val maxConnections = 50
+    val executor: ExecutorService = ThreadPoolExecutor(
+        maxConnections, // corePoolSize
+        maxConnections, // maximumPoolSize
+        60L, TimeUnit.SECONDS,
+        LinkedBlockingQueue()
+    )
 
     init {
         val jConfig = JedisPoolConfig()
-        val maxConnections = 30
-
         jConfig.maxTotal = maxConnections
         jConfig.maxIdle = maxConnections
-        jConfig.testOnBorrow = true
-        jConfig.minIdle = 5
+        jConfig.minIdle = 1
         jConfig.blockWhenExhausted = true
         jConfig.setMaxWait(Duration.ofMillis(2000))
-
 
         val password = configLoader.config?.redis?.password ?: ""
         val username = configLoader.config?.redis?.username

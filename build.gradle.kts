@@ -7,7 +7,7 @@ plugins {
     id("com.gradleup.shadow") version "9.0.0-SNAPSHOT"
 }
 
-val versionString = "1.2.3-SNAPSHOT"
+val versionString = "1.2.3"
 
 group = "dev.bypixel"
 version = versionString
@@ -31,7 +31,7 @@ val commandAPIVersion = "10.1.2"
 val skriptVersion = "2.12.0"
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
 
     library("dev.jorel:commandapi-bukkit-shade-mojang-mapped:$commandAPIVersion")
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
