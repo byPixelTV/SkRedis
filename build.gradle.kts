@@ -37,7 +37,7 @@ dependencies {
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
     library("org.yaml:snakeyaml:2.4")
     library("net.axay:kspigot:1.21.0")
-    library("redis.clients:jedis:6.0.0")
+    library("redis.clients:jedis:6.1.0")
     library(kotlin("stdlib"))
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
