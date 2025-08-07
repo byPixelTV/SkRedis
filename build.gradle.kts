@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "2.2.0"
     id("de.eldoria.plugin-yml.paper") version "0.7.1"
     id("xyz.jpenilla.run-paper") version "2.3.1"
-    id("com.gradleup.shadow") version "9.0.0-SNAPSHOT"
+    id("com.gradleup.shadow") version "9.0.0"
 }
 
 val versionString = "1.2.3"
@@ -28,7 +28,7 @@ repositories {
 }
 
 val commandAPIVersion = "10.1.2"
-val skriptVersion = "2.12.0"
+val skriptVersion = "2.12.1"
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
