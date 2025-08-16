@@ -112,7 +112,7 @@ paper {
 
     authors = listOf("byPixelTV")
 
-    apiVersion = "1.21.7"
+    apiVersion = "1.21"
 
     version = versionString
 
