@@ -11,6 +11,7 @@ import ch.njol.skript.lang.SkriptParser
 import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.skript.log.ErrorQuality
 import ch.njol.util.Kleenean
+import dev.bypixel.skredis.events.CustomRedisMessageEvent
 import dev.bypixel.skredis.events.RedisMessageEvent
 import org.bukkit.event.Event
 
@@ -31,9 +32,7 @@ class ExprMessage : SimpleExpression<String>() {
         }
     }
 
-    override fun isSingle(): Boolean {
-        return true
-    }
+    override fun isSingle(): Boolean = true
 
     @Suppress("DEPRECATION")
     override fun init(
@@ -42,7 +41,8 @@ class ExprMessage : SimpleExpression<String>() {
         isDelayed: Kleenean?,
         parseResult: SkriptParser.ParseResult?
     ): Boolean {
-        if (!parser.isCurrentEvent(RedisMessageEvent::class.java)) {
+        if (!parser.isCurrentEvent(RedisMessageEvent::class.java) &&
+            !parser.isCurrentEvent(CustomRedisMessageEvent::class.java)) {
             Skript.error("Cannot use 'redis message' outside of a redis message event", ErrorQuality.SEMANTIC_ERROR)
             return false
         }
@@ -50,18 +50,14 @@ class ExprMessage : SimpleExpression<String>() {
     }
 
     override fun get(e: Event?): Array<String>? {
-        if (e is RedisMessageEvent) {
-            return arrayOf(e.message)
+        return when (e) {
+            is RedisMessageEvent -> arrayOf(e.message)
+            is CustomRedisMessageEvent -> arrayOf(e.message)
+            else -> null
         }
-        return null
     }
 
-    override fun getReturnType(): Class<out String> {
-        return String::class.java
-    }
+    override fun getReturnType(): Class<out String> = String::class.java
 
-    override fun toString(event: Event?, b: Boolean): String {
-        return "redis message"
-    }
-
+    override fun toString(event: Event?, b: Boolean): String = "redis message"
 }

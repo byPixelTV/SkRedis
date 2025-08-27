@@ -11,6 +11,11 @@ import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
 import dev.bypixel.skredis.Main
 import dev.bypixel.skredis.SkRedisLogger
+import dev.bypixel.skredis.lettuce.LettuceRedisClient
+import dev.bypixel.skredis.utils.SkRedisCoroutineScope
+import io.lettuce.core.ExperimentalLettuceCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.bukkit.event.Event
 
 @Suppress("unused")
@@ -43,14 +48,18 @@ class EffDeleteRedisHash : Effect() {
         return "delete redis hash ${this.hashKey}"
     }
 
+    @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = Main.INSTANCE
+        val plugin = Main.instance
 
         val hashKey = hashKey!!.getSingle(e)
         if (hashKey == null) {
             SkRedisLogger.error(plugin, "Redis hash key was empty. Please check your code.")
             return
         }
-        plugin.getRC()?.deleteHashAsync(hashKey)
+
+        SkRedisCoroutineScope.launch(Dispatchers.IO) {
+            LettuceRedisClient.commands.del(hashKey)
+        }
     }
 }

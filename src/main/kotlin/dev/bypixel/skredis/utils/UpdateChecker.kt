@@ -26,17 +26,17 @@ class UpdateChecker(private val plugin: Main) : Listener {
         private var UPDATE_VERSION: Version? = null
         fun checkForUpdate(pluginVersion: String) {
             val miniMessages = MiniMessage.miniMessage()
-            SkRedisLogger.info(Main.INSTANCE, "Checking for updates...")
+            SkRedisLogger.info(Main.instance, "Checking for updates...")
             getLatestReleaseVersion { version ->
                 val plugVer = Version(pluginVersion)
                 val curVer = Version(version)
                 if (curVer <= plugVer) {
-                    SkRedisLogger.success(Main.INSTANCE, "The plugin is up to date!")
+                    SkRedisLogger.success(Main.instance, "The plugin is up to date!")
                 } else {
-                    SkRedisLogger.info(Main.INSTANCE, "The plugin is not up to date!")
-                    SkRedisLogger.info(Main.INSTANCE, " - Current version: v$pluginVersion")
-                    SkRedisLogger.info(Main.INSTANCE, " - Available update: v$version")
-                    SkRedisLogger.info(Main.INSTANCE, " - Download available at: <aqua>https://github.com/byPixelTV/SkRedis/releases</aqua>")
+                    SkRedisLogger.info(Main.instance, "The plugin is not up to date!")
+                    SkRedisLogger.info(Main.instance, " - Current version: v$pluginVersion")
+                    SkRedisLogger.info(Main.instance, " - Available update: v$version")
+                    SkRedisLogger.info(Main.instance, " - Download available at: <aqua>https://github.com/byPixelTV/SkRedis/releases</aqua>")
                     UPDATE_VERSION = curVer
                 }
             }
@@ -53,7 +53,7 @@ class UpdateChecker(private val plugin: Main) : Listener {
                 tagName = tagName.removePrefix("v")
                 consumer.accept(tagName)
             } catch (e: IOException) {
-                SkRedisLogger.error(Main.INSTANCE, "An error occurred while checking for updates: ${e.message}")
+                SkRedisLogger.error(Main.instance, "An error occurred while checking for updates: ${e.message}")
             }
         }
     }

@@ -13,14 +13,13 @@ class EvtRedis : SkriptEvent() {
 
     companion object {
         init {
-            Skript.registerEvent("redis message", EvtRedis::class.java, RedisMessageEvent::class.java, "redis message").description("Called when a message is received from Redis. The channel the message got sent to has to be in the SkRedis config to trigger the event.")
+            Skript.registerEvent("redis message", EvtRedis::class.java, RedisMessageEvent::class.java, "redis message").description("Called when a message is received from Redis. This event only fires when the message is sent by SkRedis.")
                 .examples("on redis message:", "    broadcast \"%redis message%\"")
                 .since("1.0.0")
 
             EventValues.registerEventValue(RedisMessageEvent::class.java, String::class.java, { event -> event.channelName }, 0)
             EventValues.registerEventValue(RedisMessageEvent::class.java, String::class.java, { event -> event.message }, 0)
             EventValues.registerEventValue(RedisMessageEvent::class.java, Date::class.java, { event -> Date(event.date) }, 0)
-            EventValues.registerEventValue(RedisMessageEvent::class.java, Boolean::class.java, { event -> event.isFromProxy }, 0)
         }
     }
 

@@ -34,13 +34,13 @@ object ConfigLoader {
         // Create directories if needed
         configFile.parentFile?.let {
             if (!it.exists() && !it.mkdirs()) {
-                SkRedisLogger.error(Main.INSTANCE, "Failed to create configuration directory at ${it.absolutePath}")
+                SkRedisLogger.error(Main.instance, "Failed to create configuration directory at ${it.absolutePath}")
             }
         } ?: return
 
         // If no config exists, create default
         if (!configFile.exists()) {
-            SkRedisLogger.warn(Main.INSTANCE, "Configuration file not found! Creating a new one...")
+            SkRedisLogger.warn(Main.instance, "Configuration file not found! Creating a new one...")
             config = Config()
             configNeedsSaving = true
             save()
@@ -71,7 +71,7 @@ object ConfigLoader {
                 }
             }
         } catch (e: Exception) {
-            SkRedisLogger.error(Main.INSTANCE, "Failed to load configuration file: ${e.message}")
+            SkRedisLogger.error(Main.instance, "Failed to load configuration file: ${e.message}")
             if (configFile.exists() && configFile.length() > 0) {
                 backupConfig(configFile)
             }
@@ -83,7 +83,7 @@ object ConfigLoader {
 
     fun save() {
         if (!configNeedsSaving && config != null) {
-            SkRedisLogger.info(Main.INSTANCE, "No changes to save in the configuration file.")
+            SkRedisLogger.info(Main.instance, "No changes to save in the configuration file.")
             return
         }
 
@@ -108,53 +108,36 @@ object ConfigLoader {
                         writer.write("  password: $password\n")
                         writer.write("  # Only use this if you're running Redis 6.0.6 or higher, older versions will not work correctly\n  # It encrypts your traffic and makes data exchange between distant servers secure\n")
                         writer.write("  useSsl: $useSsl\n")
-                        writer.write("  # Must be 2 or higher, if you set to lower, the addon will automatically use 2 as a minimum\n  # Do not edit MaxConnections if you do not know what you're doing\n  # It is only useful to increase this number to account for PING between distant servers and when you are sending a lot of messages constantly\n")
-                        writer.write("  maxConnections: $maxConnections\n")
-                        writer.write("  # The timeout of the connection in milliseconds, if you have a slow connection, increase this number\n")
-                        writer.write("  timeout: $timeout\n")
-                        writer.write("  # If you want to use a custom message format, set this to true\n  # If you do not know what you're doing, leave this as false\n")
-                        writer.write("  useCustomMessageFormat: $useCustomMessageFormat\n")
-                        writer.write("  # The format of the messages that SkRedis will sent, you can change this if you know what you're doing\n  # %message% will be replaced with the message you send. If the format is not a valid json it will just return the plain string with the replaced placeholders you entered here.\n")
-                        writer.write("  messageFormat: |\n")
-                        writer.write("    $messageFormat\n\n")
                     }
-                    writer.write("# Enable support for RediVelocity, a modern Velocity plugin similar to RedisBungee.\n# It is recommended to use RediVelocity instead of RedisBungee, and also we only support RediVelocity, but it is no problem to have both plugins on your proxy\n# Ths will return the Redis message as JSON string, I recommend SkJson for JSON in Skript\n")
-                    writer.write("redivelocity:\n")
-                    with(config.redivelocity) {
-                        writer.write("  enabled: $enabled\n")
-                    }
-                    writer.write("# The channels that SkRedis will listen to, you can add more channels if you want to\n# You can always send messages to all channels.\n# The ideal setup is having one global channel and having one channel that represents the server name, a group of servers or a specific system, so you know who to send messages to and to keep it clean, but you can do whatever you want here!\n")
-                    writer.write("channels:\n")
-                    config.channels.forEach { writer.write("  - $it\n") }
                 }
             }
-            SkRedisLogger.success(Main.INSTANCE, "Configuration saved successfully at ${configFile.absolutePath}")
+            SkRedisLogger.success(Main.instance, "Configuration saved successfully at ${configFile.absolutePath}")
             configNeedsSaving = false
         } catch (e: Exception) {
-            SkRedisLogger.error(Main.INSTANCE, "Failed to save configuration file: ${e.message}")
+            SkRedisLogger.error(Main.instance, "Failed to save configuration file: ${e.message}")
         }
     }
 
     fun reload() {
-        SkRedisLogger.info(Main.INSTANCE, "Reloading configuration...")
+        SkRedisLogger.info(Main.instance, "Reloading configuration...")
         config?.configVersion ?: -1
         load()
-        SkRedisLogger.success(Main.INSTANCE, "Configuration reloaded successfully!")
+        SkRedisLogger.success(Main.instance, "Configuration reloaded successfully!")
     }
 
     private fun backupConfig(configFile: File) {
         try {
             val backupDir = File(configFile.parentFile, "config-backup")
             if (!backupDir.exists() && !backupDir.mkdirs()) {
-                SkRedisLogger.error(Main.INSTANCE, "Failed to create backup directory at ${backupDir.absolutePath}")
+                SkRedisLogger.error(Main.instance, "Failed to create backup directory at ${backupDir.absolutePath}")
                 return
             }
             val timestamp = System.currentTimeMillis()
             val backupFile = File(backupDir, "${configFile.nameWithoutExtension}-$timestamp.yml")
             Files.copy(configFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
-            SkRedisLogger.success(Main.INSTANCE, "Backup created successfully at ${backupFile.absolutePath}")
+            SkRedisLogger.success(Main.instance, "Backup created successfully at ${backupFile.absolutePath}")
         } catch (e: Exception) {
-            SkRedisLogger.error(Main.INSTANCE, "Failed to create backup of config file: ${e.message}")
+            SkRedisLogger.error(Main.instance, "Failed to create backup of config file: ${e.message}")
         }
     }
 
@@ -164,12 +147,12 @@ object ConfigLoader {
         // Remove unknown keys
         val keysToRemove = loadedMap.keys.filter { !defaultMap.containsKey(it) }.toList()
         if (keysToRemove.isNotEmpty()) {
-            SkRedisLogger.warn(Main.INSTANCE, "Found unknown keys at $path: $keysToRemove")
+            SkRedisLogger.warn(Main.instance, "Found unknown keys at $path: $keysToRemove")
         }
         for (key in keysToRemove) {
             loadedMap.remove(key)
             changed = true
-            SkRedisLogger.info(Main.INSTANCE, "Removed unknown key: $path.$key")
+            SkRedisLogger.info(Main.instance, "Removed unknown key: $path.$key")
         }
 
         // Add missing keys or merge nested maps
@@ -177,7 +160,7 @@ object ConfigLoader {
             if (!loadedMap.containsKey(key) || loadedMap[key] == null) {
                 loadedMap[key] = defaultValue
                 changed = true
-                SkRedisLogger.warn(Main.INSTANCE, "Added missing key: $path.$key")
+                SkRedisLogger.warn(Main.instance, "Added missing key: $path.$key")
             } else if (defaultValue is Map<*, *> && loadedMap[key] is Map<*, *>) {
                 val nestedDefault = defaultValue as Map<String, Any>
                 val nestedLoaded = (loadedMap[key] as Map<String, Any>).toMutableMap()

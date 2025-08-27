@@ -11,6 +11,11 @@ import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
 import dev.bypixel.skredis.Main
 import dev.bypixel.skredis.SkRedisLogger
+import dev.bypixel.skredis.lettuce.LettuceRedisClient
+import dev.bypixel.skredis.utils.SkRedisCoroutineScope
+import io.lettuce.core.ExperimentalLettuceCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.bukkit.event.Event
 
 @Suppress("unused")
@@ -45,8 +50,9 @@ class EffAddValueToRedisList : Effect() {
         return "add ${this.addValues} to redis list ${this.listKey}"
     }
 
+    @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = Main.INSTANCE
+        val plugin = Main.instance
 
         val addValues = addValues!!.getAll(e).toList()
 
@@ -56,6 +62,8 @@ class EffAddValueToRedisList : Effect() {
             SkRedisLogger.error(plugin, "Redis list key was empty. Please check your code.")
             return
         }
-        plugin.getRC()?.addMultipleToListAsync(listKey, addValues)
+        SkRedisCoroutineScope.launch(Dispatchers.IO) {
+            LettuceRedisClient.commands.rpush(listKey, *addValues.toTypedArray())
+        }
     }
 }

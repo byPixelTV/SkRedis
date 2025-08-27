@@ -10,6 +10,11 @@ import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
 import dev.bypixel.skredis.Main
+import dev.bypixel.skredis.lettuce.LettuceRedisClient
+import dev.bypixel.skredis.utils.SkRedisCoroutineScope
+import io.lettuce.core.ExperimentalLettuceCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.bukkit.event.Event
 
 @Suppress("unused")
@@ -42,10 +47,14 @@ class EffDeleteRedisString : Effect() {
         return "delete redis string ${this.stringName}"
     }
 
+    @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = Main.INSTANCE
+        val plugin = Main.instance
 
         val stringName = this.stringName?.getSingle(e) ?: return
-        plugin.getRC()?.deleteStringAsync(stringName)
+
+        SkRedisCoroutineScope.launch(Dispatchers.IO) {
+            LettuceRedisClient.commands.del(stringName)
+        }
     }
 }

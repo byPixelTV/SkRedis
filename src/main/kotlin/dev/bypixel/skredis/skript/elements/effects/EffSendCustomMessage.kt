@@ -17,17 +17,18 @@ import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bukkit.event.Event
+import org.json.JSONObject
 
 @Suppress("unused")
-@Name("Redis Pub/Sub - send redis message")
-@Description("Sends a message to a specific channel in Redis.")
-@Examples("send redis message \"Foo\" to channel \"Bar\"")
-@Since("1.0.0")
-class EffSendMessage : Effect() {
+@Name("Redis Pub/Sub - send custom redis message")
+@Description("Sends a custom message to a specific channel in Redis. The message has to be a valid JSON string. If not, the message will not be sent and a warning will be printed in the console.")
+@Examples("send custom redis message \"{\"\"foo\"\": \"\"bar\"\"}\" to channel \"cool-channel\"")
+@Since("2.0.0")
+class EffSendCustomMessage : Effect() {
 
     companion object{
         init {
-            Skript.registerEffect(EffSendMessage::class.java, "send redis message %string% to [channel] %string%")
+            Skript.registerEffect(EffSendCustomMessage::class.java, "send custom redis message %string% to [channel] %string%")
         }
     }
 
@@ -47,7 +48,7 @@ class EffSendMessage : Effect() {
     }
 
     override fun toString(event: Event?, debug: Boolean): String {
-        return "send redis message " + message!!.toString(event, debug) + " to channel " + channel!!.toString(
+        return "send custom redis message " + message!!.toString(event, debug) + " to channel " + channel!!.toString(
             event,
             debug
         )
@@ -70,10 +71,10 @@ class EffSendMessage : Effect() {
         }
         try {
             SkRedisCoroutineScope.launch(Dispatchers.IO) {
-                LettuceRedisClient.sendMessage(message, channel)
+                LettuceRedisClient.sendCustomMessage(JSONObject(message), channel)
             }
         } catch (e: Exception) {
-            SkRedisLogger.error(plugin, "An error occurred while sending the message to the Redis server.")
+            SkRedisLogger.warn(plugin, "A message was not sent. Please make sure your message is a valid JSON string.")
             e.printStackTrace()
         }
     }

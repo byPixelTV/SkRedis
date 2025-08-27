@@ -12,6 +12,7 @@ import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.skript.log.ErrorQuality
 import ch.njol.util.Kleenean
 import dev.bypixel.skredis.events.RedisMessageEvent
+import dev.bypixel.skredis.events.CustomRedisMessageEvent
 import org.bukkit.event.Event
 
 @Suppress("unused")
@@ -31,9 +32,7 @@ class ExprChannel : SimpleExpression<String>() {
         }
     }
 
-    override fun isSingle(): Boolean {
-        return true
-    }
+    override fun isSingle(): Boolean = true
 
     @Suppress("DEPRECATION")
     override fun init(
@@ -42,7 +41,8 @@ class ExprChannel : SimpleExpression<String>() {
         isDelayed: Kleenean?,
         parseResult: SkriptParser.ParseResult?
     ): Boolean {
-        if (!parser.isCurrentEvent(RedisMessageEvent::class.java)) {
+        if (!parser.isCurrentEvent(RedisMessageEvent::class.java) &&
+            !parser.isCurrentEvent(CustomRedisMessageEvent::class.java)) {
             Skript.error("Cannot use 'redis channel' outside of a redis message event", ErrorQuality.SEMANTIC_ERROR)
             return false
         }
@@ -50,18 +50,14 @@ class ExprChannel : SimpleExpression<String>() {
     }
 
     override fun get(e: Event?): Array<String>? {
-        if (e is RedisMessageEvent) {
-            return arrayOf(e.channelName)
+        return when (e) {
+            is RedisMessageEvent -> arrayOf(e.channelName)
+            is CustomRedisMessageEvent -> arrayOf(e.channelName)
+            else -> null
         }
-        return null
     }
 
-    override fun getReturnType(): Class<out String> {
-        return String::class.java
-    }
+    override fun getReturnType(): Class<out String> = String::class.java
 
-    override fun toString(event: Event?, b: Boolean): String {
-        return "redis channel"
-    }
-
+    override fun toString(event: Event?, b: Boolean): String = "redis channel"
 }

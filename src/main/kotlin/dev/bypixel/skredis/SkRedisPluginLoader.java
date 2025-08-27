@@ -9,6 +9,7 @@ import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.repository.RemoteRepository;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -21,15 +22,17 @@ public class SkRedisPluginLoader implements PluginLoader {
     public void classloader(PluginClasspathBuilder classpathBuilder) {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
         PluginLibraries pluginLibraries = load();
+
         pluginLibraries.asDependencies().forEach(resolver::addDependency);
         pluginLibraries.asRepositories().forEach(resolver::addRepository);
+
         classpathBuilder.addLibrary(resolver);
     }
 
     public PluginLibraries load() {
-        try (InputStreamReader inputStream = new InputStreamReader(
-                getClass().getResourceAsStream("/paper-libraries.json"), StandardCharsets.UTF_8)) {
-            return new Gson().fromJson(inputStream, PluginLibraries.class);
+        try (InputStream inputStream = getClass().getResourceAsStream("/paper-libraries.json");
+             InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+            return new Gson().fromJson(reader, PluginLibraries.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -39,29 +42,32 @@ public class SkRedisPluginLoader implements PluginLoader {
         private Map<String, String> repositories;
         private List<String> dependencies;
 
-        public Stream<Dependency> asDependencies() {
-            return dependencies.stream().map(dep -> new Dependency(new DefaultArtifact(dep), null));
-        }
-
-        public Stream<RemoteRepository> asRepositories() {
-            return repositories.entrySet().stream().map(entry ->
-                    new RemoteRepository.Builder(entry.getKey(), "default", entry.getValue()).build());
-        }
-
         public Map<String, String> getRepositories() {
             return repositories;
-        }
-
-        public void setRepositories(Map<String, String> repositories) {
-            this.repositories = repositories;
         }
 
         public List<String> getDependencies() {
             return dependencies;
         }
 
-        public void setDependencies(List<String> dependencies) {
-            this.dependencies = dependencies;
+        public Stream<Dependency> asDependencies() {
+            return dependencies.stream().map(d -> new Dependency(new DefaultArtifact(d), null));
+        }
+
+        public Stream<RemoteRepository> asRepositories() {
+            return repositories.entrySet().stream().map(entry -> {
+                String url = entry.getValue();
+                if (url.contains("https://repo1.maven.org/maven2") ||
+                        url.contains("http://repo1.maven.org/maven2") ||
+                        url.contains("https://repo.maven.apache.org/maven2") ||
+                        url.contains("http://repo.maven.apache.org/maven2")) {
+                    return new RemoteRepository.Builder(
+                            "central", "default", MavenLibraryResolver.MAVEN_CENTRAL_DEFAULT_MIRROR
+                    ).build();
+                } else {
+                    return new RemoteRepository.Builder(entry.getKey(), "default", entry.getValue()).build();
+                }
+            });
         }
     }
 }

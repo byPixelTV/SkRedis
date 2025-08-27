@@ -4,32 +4,25 @@ import ch.njol.skript.Skript
 import ch.njol.skript.SkriptAddon
 import dev.bypixel.skredis.commands.Commands
 import dev.bypixel.skredis.config.ConfigLoader
-import dev.bypixel.skredis.jedisWrapper.RedisController
-import dev.bypixel.skredis.jedisWrapper.RedisMessageManager
+import dev.bypixel.skredis.lettuce.LettuceRedisClient
+import dev.bypixel.skredis.lettuce.RedisListenerImpl
+import dev.bypixel.skredis.lettuce.listener.RedisListener
 import dev.bypixel.skredis.utils.IngameUpdateChecker
+import dev.bypixel.skredis.utils.SkRedisCoroutineScope
 import dev.bypixel.skredis.utils.UpdateChecker
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.axay.kspigot.main.KSpigot
 import java.io.IOException
 
 class Main : KSpigot() {
-
-    private var redisController: RedisController? = null
-
-    fun getRC(): RedisController? {
-        return redisController
-    }
-
-    fun setRedisController() {
-        redisController = RedisController(this)
-    }
-
-    private var instance: Main? = null
     private var addon: SkriptAddon? = null
 
     companion object {
-        lateinit var INSTANCE: Main
+        lateinit var instance: Main
+            private set
     }
 
     init {
@@ -41,10 +34,8 @@ class Main : KSpigot() {
         Commands()
     }
 
-    @Suppress("DEPRECATION")
     override fun startup() {
-        INSTANCE = this
-        this.instance = this
+        instance = this
 
         ConfigLoader
 
@@ -52,18 +43,17 @@ class Main : KSpigot() {
         this.addon = Skript.registerAddon(this)
         val localAddon = this.addon
 
-        redisController = RedisController(this)
+        RedisListenerImpl
 
         IngameUpdateChecker
 
-        val version = description.version
+        val version = pluginMeta.version
         if (version.contains("-")) {
             SkRedisLogger.info(this, "This is a BETA build, things may not work as expected, please report any bugs on GitHub")
             SkRedisLogger.info(this, "<yellow>https://github.com/byPixelTV/SkRedis/issues</yellow>")
         }
 
         UpdateChecker.checkForUpdate(version)
-        RedisMessageManager.initialize()
 
         SkRedisLogger.success(this, "SkRedis has been successfully enabled!")
 
@@ -72,12 +62,18 @@ class Main : KSpigot() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+
+        SkRedisCoroutineScope.launch(Dispatchers.IO) {
+            if (LettuceRedisClient.tryConnection()) {
+                SkRedisLogger.success(instance, "Successfully connected to the Redis server.")
+            } else {
+                SkRedisLogger.error(instance, "Could not connect to the Redis server, please check your configuration. Disabling...")
+                server.pluginManager.disablePlugin(instance)
+            }
+        }
     }
 
     override fun shutdown() {
-        RedisMessageManager.unsubscribe()
-        if (redisController != null) {
-            redisController!!.shutdown()
-        }
+        RedisListener.unregisterListener(RedisListenerImpl)
     }
 }

@@ -7,7 +7,7 @@ plugins {
     id("com.gradleup.shadow") version "9.0.2"
 }
 
-val versionString = "1.2.3"
+val versionString = "2.0.0-SNAPSHOT"
 
 group = "dev.bypixel"
 version = versionString
@@ -37,12 +37,19 @@ dependencies {
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
     library("org.yaml:snakeyaml:2.4")
     library("net.axay:kspigot:1.21.0")
-    library("redis.clients:jedis:6.1.0")
+    library("io.lettuce:lettuce-core:6.8.0.RELEASE") {
+        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-reactive")
+    }
+    library("org.json:json:20250517")
+
     library(kotlin("stdlib"))
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
     library("org.jetbrains.kotlin:kotlin-reflect:2.2.10")
+    library("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    library("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.10.2")
 }
 
 sourceSets {
@@ -63,20 +70,25 @@ tasks {
     }
 
     shadowJar {
-        relocate("com.tcoded.folialib", "dev.bypixel.skredis.lib.folialib")
-
         archiveBaseName.set("SkRedis")
         archiveVersion.set(version.toString())
         archiveClassifier.set("")
+
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "mojang"
+        }
+
+        minimize()
     }
 
     runServer {
-        minecraftVersion("1.21.5")
+        minecraftVersion("1.21.7")
 
         downloadPlugins {
             url("https://github.com/SkriptLang/Skript/releases/download/$skriptVersion/Skript-${skriptVersion}.jar")
-            url("https://cdn.modrinth.com/data/P1OZGk5p/versions/c7qUCKzX/ViaVersion-5.4.0-SNAPSHOT.jar")
-            url("https://cdn.modrinth.com/data/NpvuJQoq/versions/dtrTeZLl/ViaBackwards-5.4.0-SNAPSHOT.jar")
+            url("https://github.com/SkriptHub/SkriptHubDocsTool/releases/download/1.14/skripthubdocstool-1.14.jar")
+            modrinth("viaversion", "5.4.2")
+            modrinth("viabackwards", "5.4.2")
         }
     }
 }
@@ -95,13 +107,6 @@ tasks.jar {
     }
 }
 
-// if you have shadowJar configured
-tasks.shadowJar {
-    manifest {
-        attributes["paperweight-mappings-namespace"] = "mojang"
-    }
-}
-
 paper {
     main = "dev.bypixel.skredis.Main"
 
@@ -112,16 +117,18 @@ paper {
 
     authors = listOf("byPixelTV")
 
-    apiVersion = "1.21"
+    apiVersion = "1.21.8"
 
     version = versionString
 
     foliaSupported = false
 
+    description = "A Skript-Addon to interact with Redis."
+
     prefix = "SkRedis"
 
     serverDependencies {
-        // During server run time, require Skript, add it to the classpath, and load it before us
+        // During server run time, require Skript, add it to the classpath, and load it before us. paper plugins require the joinClasspath to be true to work.
         register("Skript") {
             load = PaperPluginDescription.RelativeLoadOrder.BEFORE
             joinClasspath = true

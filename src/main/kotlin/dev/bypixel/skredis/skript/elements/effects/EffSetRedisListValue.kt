@@ -11,6 +11,11 @@ import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
 import dev.bypixel.skredis.Main
 import dev.bypixel.skredis.SkRedisLogger
+import dev.bypixel.skredis.lettuce.LettuceRedisClient
+import dev.bypixel.skredis.utils.SkRedisCoroutineScope
+import io.lettuce.core.ExperimentalLettuceCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.bukkit.event.Event
 
 @Suppress("unused")
@@ -47,8 +52,9 @@ class EffSetRedisListValue : Effect() {
         return "set entry with index ${this.listIndex} in redis list ${this.listKey} to ${this.listValue}"
     }
 
+    @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = Main.INSTANCE
+        val plugin = Main.instance
 
         val listIndexNumber = listIndex!!.getSingle(e)
         if (listIndexNumber == null) {
@@ -62,6 +68,8 @@ class EffSetRedisListValue : Effect() {
             SkRedisLogger.error(plugin, "Redis list key was empty. Please check your code.")
             return
         }
-        plugin.getRC()!!.setListValueAsync(listKey, listIndex, listValue!!)
+        SkRedisCoroutineScope.launch(Dispatchers.IO) {
+            LettuceRedisClient.commands.lset(listKey, listIndex.toLong(), listValue ?: "")
+        }
     }
 }

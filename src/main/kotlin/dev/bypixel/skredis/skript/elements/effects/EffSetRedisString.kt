@@ -11,6 +11,11 @@ import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
 import dev.bypixel.skredis.Main
 import dev.bypixel.skredis.SkRedisLogger
+import dev.bypixel.skredis.lettuce.LettuceRedisClient
+import dev.bypixel.skredis.utils.SkRedisCoroutineScope
+import io.lettuce.core.ExperimentalLettuceCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.bukkit.event.Event
 
 @Suppress("unused")
@@ -45,8 +50,9 @@ class EffSetRedisString : Effect() {
         return "set redis string ${this.stringName} to ${this.stringValue}"
     }
 
+    @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = Main.INSTANCE
+        val plugin = Main.instance
 
         val name = stringName!!.getSingle(e)
         if (name == null) {
@@ -58,6 +64,8 @@ class EffSetRedisString : Effect() {
             SkRedisLogger.error(plugin, "Redis string value was empty. Please check your code.")
             return
         }
-        plugin.getRC()!!.setStringAsync(name, value)
+        SkRedisCoroutineScope.launch(Dispatchers.IO) {
+            LettuceRedisClient.commands.set(name, value)
+        }
     }
 }

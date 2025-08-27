@@ -5,8 +5,6 @@ import ch.njol.skript.util.Version
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import dev.bypixel.skredis.Main
-import dev.bypixel.skredis.config.ConfigLoader
-import dev.bypixel.skredis.jedisWrapper.RedisMessageManager
 import dev.bypixel.skredis.utils.Colors
 import dev.bypixel.skredis.utils.UpdateChecker
 import dev.bypixel.skredis.utils.UpdateChecker.Companion.getLatestReleaseVersion
@@ -41,7 +39,7 @@ class Commands {
                     if (addonMessages.isNotEmpty()) addonMessages.joinToString("\n") else "<color:#ff0000>No other addons found</color>"
                 player.sendMessage(
                     miniMessages.deserialize(
-                        "<dark_grey>--- ${Colors.MINT_GREEN_DARK.hex}SkRedis</color> <grey>Info:</grey> ---</dark_grey>\n\n<grey>SkRedis Version: ${Colors.MINT_GREEN_DARK.hex}${Main.INSTANCE.description.version}</color>\nSkript Version: ${Colors.MINT_GREEN_DARK.hex}${Skript.getInstance().description.version}</color>\nServer Version: ${Colors.MINT_GREEN_DARK.hex}${Main.INSTANCE.server.minecraftVersion}</color>\nServer Implementation: ${Colors.MINT_GREEN_DARK.hex}${Bukkit.getVersion()}</color>\nAddons:\n$addonsList</grey>"
+                        "<dark_grey>--- ${Colors.MINT_GREEN_DARK.hex}SkRedis</color> <grey>Info:</grey> ---</dark_grey>\n\n<grey>SkRedis Version: ${Colors.MINT_GREEN_DARK.hex}${Main.instance.description.version}</color>\nSkript Version: ${Colors.MINT_GREEN_DARK.hex}${Skript.getInstance().description.version}</color>\nServer Version: ${Colors.MINT_GREEN_DARK.hex}${Main.instance.server.minecraftVersion}</color>\nServer Implementation: ${Colors.MINT_GREEN_DARK.hex}${Bukkit.getVersion()}</color>\nAddons:\n$addonsList</grey>"
                     )
                 )
             }
@@ -49,11 +47,11 @@ class Commands {
         literalArgument("version") {
             withPermission("skredis.admin.version")
             anyExecutor { player, _ ->
-                val currentVersion = Main.INSTANCE.description.version
-                val updateVersion = UpdateChecker(Main.INSTANCE).getUpdateVersion(currentVersion)
+                val currentVersion = Main.instance.description.version
+                val updateVersion = UpdateChecker(Main.instance).getUpdateVersion(currentVersion)
 
                 getLatestReleaseVersion { version ->
-                    val plugVer = Version(Main.INSTANCE.description.version)
+                    val plugVer = Version(Main.instance.description.version)
                     val curVer = Version(version)
                     val url = URL("https://api.github.com/repos/byPixelTV/skRedis/releases/latest")
                     val reader = BufferedReader(InputStreamReader(url.openStream()))
@@ -63,7 +61,7 @@ class Commands {
                     if (curVer <= plugVer) {
                         player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> ${Colors.GREEN.hex}The plugin is up to date!</color>"))
                     } else {
-                        Bukkit.getScheduler().runTaskLater(Main.INSTANCE, Runnable {
+                        Bukkit.getScheduler().runTaskLater(Main.instance, Runnable {
                             updateVersion.thenApply { version ->
                                 player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> update available: ${Colors.GREEN.hex}$version</color>"))
                                 player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> download at ${Colors.MINT_GREEN_DARK.hex}<click:open_url:'https://github.com/byPixelTV/SkRedis/releases'>https://github.com/byPixelTV/SkRedis/releases</click></color>"))
@@ -72,16 +70,6 @@ class Commands {
                         }, 30)
                     }
                 }
-            }
-        }
-        literalArgument("reload") {
-            withPermission("skredis.admin.reload")
-            anyExecutor { player, _ ->
-                ConfigLoader.reload()
-                Main.INSTANCE.getRC()?.shutdown()
-                Main.INSTANCE.setRedisController()
-                RedisMessageManager.restart()
-                player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> ${Colors.GREY.hex}Reloading the config...</color> Watch ${Colors.YELLOW.hex}the console</color> and ${Colors.YELLOW.hex}check if errors occur</color></color>"))
             }
         }
     }

@@ -3,7 +3,7 @@ package dev.bypixel.skredis.events
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class RedisMessageEvent(val channelName: String, val message: String, val date: Long) : Event(true) {
+class CustomRedisMessageEvent(val channelName: String, val message: String) : Event(true) {
     companion object {
         @JvmStatic
         val HANDLERS: HandlerList = HandlerList()

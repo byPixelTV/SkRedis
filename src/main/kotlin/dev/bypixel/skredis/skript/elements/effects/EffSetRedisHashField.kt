@@ -11,6 +11,11 @@ import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
 import dev.bypixel.skredis.Main
 import dev.bypixel.skredis.SkRedisLogger
+import dev.bypixel.skredis.lettuce.LettuceRedisClient
+import dev.bypixel.skredis.utils.SkRedisCoroutineScope
+import io.lettuce.core.ExperimentalLettuceCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.bukkit.event.Event
 
 @Suppress("unused")
@@ -22,7 +27,7 @@ class EffSetRedisHashField : Effect() {
 
     companion object{
         init {
-            Skript.registerEffect(EffSetRedisHashField::class.java, "set [hash] field %strings% to %string% in [redis] (hash|value) %string%")
+            Skript.registerEffect(EffSetRedisHashField::class.java, "set [hash] field %string% to %string% in [redis] (hash|value) %string%")
         }
     }
 
@@ -47,8 +52,9 @@ class EffSetRedisHashField : Effect() {
         return "set redis hash ${this.hashName}"
     }
 
+    @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = Main.INSTANCE
+        val plugin = Main.instance
 
         val hashName = hashName?.getSingle(e)
         val fieldName = fieldName?.getSingle(e)
@@ -67,6 +73,8 @@ class EffSetRedisHashField : Effect() {
             return
         }
 
-        plugin.getRC()?.setHashFieldAsync(hashName, fieldName, fieldValue)
+        SkRedisCoroutineScope.launch(Dispatchers.IO) {
+            LettuceRedisClient.commands.hset(hashName, fieldName, fieldValue)
+        }
     }
 }

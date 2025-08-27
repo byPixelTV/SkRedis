@@ -10,7 +10,7 @@ import ch.njol.skript.lang.ExpressionType
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.Main
+import dev.bypixel.skredis.lettuce.LettuceRedisClient
 import org.bukkit.event.Event
 
 @Suppress("unused")
@@ -50,8 +50,6 @@ class ExprGetHashFieldNamesByValue : SimpleExpression<String>() {
     }
 
     override fun get(e: Event?): Array<String>? {
-        val plugin = Main.INSTANCE
-
         val hash: String? = hashKey?.getSingle(e)
         val value: String? = value?.getSingle(e)
 
@@ -59,7 +57,7 @@ class ExprGetHashFieldNamesByValue : SimpleExpression<String>() {
             return null
         }
 
-        val fieldNames: Array<String?> = plugin.getRC()?.getHashFieldNamesByValue(hash, value)?.toTypedArray() ?: return null
+        val fieldNames: Array<String?> = LettuceRedisClient.sync.hgetall(hash).filterValues { it == value }.keys.toTypedArray()
 
         return if (fieldNames[0] != null) fieldNames.filterNotNull().toTypedArray() else null
     }

@@ -11,6 +11,11 @@ import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
 import dev.bypixel.skredis.Main
 import dev.bypixel.skredis.SkRedisLogger
+import dev.bypixel.skredis.lettuce.LettuceRedisClient
+import dev.bypixel.skredis.utils.SkRedisCoroutineScope
+import io.lettuce.core.ExperimentalLettuceCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.bukkit.event.Event
 
 @Suppress("unused")
@@ -22,7 +27,7 @@ class EffDeleteRedisHashField : Effect() {
 
     companion object{
         init {
-            Skript.registerEffect(EffDeleteRedisHashField::class.java, "delete field %string% in redis (hash|value) %string%")
+            Skript.registerEffect(EffDeleteRedisHashField::class.java, "delete (field|key) %string% in redis (hash|value) %string%")
         }
     }
 
@@ -45,8 +50,9 @@ class EffDeleteRedisHashField : Effect() {
         return "delete field ${this.fieldName} in redis hash ${this.hashKey}"
     }
 
+    @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = Main.INSTANCE
+        val plugin = Main.instance
 
         val fieldName = fieldName!!.getSingle(e)
         if (fieldName == null) {
@@ -58,6 +64,9 @@ class EffDeleteRedisHashField : Effect() {
             SkRedisLogger.error(plugin, "Redis hash key was empty. Please check your code.")
             return
         }
-        plugin.getRC()?.deleteHashFieldAsync(hashKey, fieldName)
+
+        SkRedisCoroutineScope.launch(Dispatchers.IO) {
+            LettuceRedisClient.commands.hdel(hashKey, fieldName)
+        }
     }
 }
