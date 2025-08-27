@@ -49,5 +49,5 @@ jobs:
             paper
             purpur
           game-versions: |-
-            1.21.x
+            1.21.8
           files: build/libs/SkRedis-${{ env.VERSION }}.jar
