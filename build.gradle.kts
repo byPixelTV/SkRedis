@@ -107,6 +107,12 @@ tasks.jar {
     }
 }
 
+tasks {
+    generatePaperPluginDescription {
+        useDefaultCentralProxy()
+    }
+}
+
 paper {
     main = "dev.bypixel.skredis.Main"
 
