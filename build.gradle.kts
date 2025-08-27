@@ -2,7 +2,7 @@ import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
     kotlin("jvm") version "2.2.10"
-    id("de.eldoria.plugin-yml.paper") version "0.7.1"
+    id("de.eldoria.plugin-yml.paper") version "0.8.0"
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("com.gradleup.shadow") version "9.0.2"
 }
