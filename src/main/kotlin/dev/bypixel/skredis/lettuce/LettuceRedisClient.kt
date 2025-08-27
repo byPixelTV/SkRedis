@@ -29,9 +29,18 @@ object LettuceRedisClient {
     private val port = config.port
     private val password = config.password
     private val useSsl = config.useSsl
+    private val username = config.username
 
     private val redisUri = RedisURI.Builder.redis(host, port).apply {
-        password.takeIf { it.isNotBlank() }?.let { withPassword(it.toCharArray()) }
+        when {
+            username.isNotBlank() && password.isNotBlank() ->
+                withAuthentication(username, password.toCharArray())
+            username.isBlank() && password.isNotBlank() ->
+                withPassword(password.toCharArray())
+            else -> {
+
+            }
+        }
         if (useSsl) {
             withSsl(true)
             withStartTls(true)
