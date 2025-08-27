@@ -7,7 +7,7 @@ plugins {
     id("com.gradleup.shadow") version "9.0.2"
 }
 
-val versionString = "2.0.0-SNAPSHOT"
+val versionString = "2.0.0"
 
 group = "dev.bypixel"
 version = versionString
