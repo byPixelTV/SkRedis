@@ -1,12 +1,12 @@
 <div align="center">
 <a href="https://papermc.io/" target="_blank">
-  <img src="https://cdn.bypixel.dev/raw/4IEdXg.png" height="64" alt="paper logo" />
+  <img src="https://cdn.bypixel.dev/raw/mQWF86.png" height="64" alt="paper logo" />
 </a>
 <a href="https://purpurmc.org/" target="_blank">
-  <img src="https://cdn.bypixel.dev/raw/5nKJA5.png" height="64" alt="purpur logo" />
+  <img src="https://cdn.bypixel.dev/raw/pDO59E.png" height="64" alt="purpur logo" />
 </a>
 <a href="https://modrinth.com/plugin/skredis" target="_blank">
-  <img src="https://cdn.bypixel.dev/raw/sDbBd9.png" height="64" alt="modrinth logo" />
+  <img src="https://cdn.bypixel.dev/raw/4dlsHJ.png" height="64" alt="modrinth logo" />
 </a>
 
 
@@ -36,7 +36,7 @@
 
 <div align="center">
   <a href="https://discord.gg/yVp7Qvhj9k" target="_blank">
-    <img src="https://cdn.bypixel.dev/raw/XQWtxy.png" height="64" alt="discord logo" />
+    <img src="https://cdn.bypixel.dev/raw/ibP3KW.png" height="64" alt="discord logo" />
   </a>
   <a href="https://skripthub.net/docs/?addon=SkRedis" target="_blank">
     <img src="https://skripthub.net/static/addon/ViewTheDocsButton.png" height="64" alt="skripthub logo" />
@@ -53,8 +53,8 @@
 
 <div align="center">
   <h3 align="center">Uses modern technology 🚀</h3>
-  <img src="https://cdn.bypixel.dev/raw/1g0lFi.png" height="64" alt="kotlin" />
-  <img src="https://cdn.bypixel.dev/raw/bOPP8Z.png" height="64" alt="gradle" />
-  <img src="https://cdn.bypixel.dev/raw/9dl4RX.png" height="64" alt="no-bukkit" />
-  <img src="https://cdn.bypixel.dev/raw/BKniis.png" height="64" alt="no-spigot" />
+  <img src="https://cdn.bypixel.dev/raw/QhWGzB.png" height="64" alt="kotlin" />
+  <img src="https://cdn.bypixel.dev/raw/rptkK4.png" height="64" alt="gradle" />
+  <img src="https://cdn.bypixel.dev/raw/KiBJIM.png" height="64" alt="no-bukkit" />
+  <img src="https://cdn.bypixel.dev/raw/sjx9uC.png" height="64" alt="no-spigot" />
 </div>
