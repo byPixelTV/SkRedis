@@ -1,7 +1,7 @@
 import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
-    kotlin("jvm") version "2.2.10"
+    kotlin("jvm") version "2.2.20"
     id("de.eldoria.plugin-yml.paper") version "0.8.0"
     id("xyz.jpenilla.run-paper") version "3.0.0"
     id("com.gradleup.shadow") version "9.1.0"
@@ -47,7 +47,7 @@ dependencies {
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
-    library("org.jetbrains.kotlin:kotlin-reflect:2.2.10")
+    library("org.jetbrains.kotlin:kotlin-reflect:2.2.20")
     library("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     library("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.10.2")
 }
