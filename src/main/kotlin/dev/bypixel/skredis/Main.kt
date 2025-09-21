@@ -2,6 +2,8 @@ package dev.bypixel.skredis
 
 import ch.njol.skript.Skript
 import ch.njol.skript.SkriptAddon
+import com.github.Anon8281.universalScheduler.UniversalScheduler
+import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler
 import dev.bypixel.skredis.commands.Commands
 import dev.bypixel.skredis.config.ConfigLoader
 import dev.bypixel.skredis.lettuce.LettuceRedisClient
@@ -19,6 +21,7 @@ import java.io.IOException
 
 class Main : KSpigot() {
     private var addon: SkriptAddon? = null
+    lateinit var scheduler: TaskScheduler
 
     companion object {
         lateinit var instance: Main
@@ -46,6 +49,8 @@ class Main : KSpigot() {
         RedisListenerImpl
 
         IngameUpdateChecker
+
+        scheduler = UniversalScheduler.getScheduler(this)
 
         val version = pluginMeta.version
         if (version.contains("-")) {

@@ -61,7 +61,7 @@ class Commands {
                     if (curVer <= plugVer) {
                         player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> ${Colors.GREEN.hex}The plugin is up to date!</color>"))
                     } else {
-                        Bukkit.getScheduler().runTaskLater(Main.instance, Runnable {
+                        Main.instance.scheduler.runTaskLater({
                             updateVersion.thenApply { version ->
                                 player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> update available: ${Colors.GREEN.hex}$version</color>"))
                                 player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> download at ${Colors.MINT_GREEN_DARK.hex}<click:open_url:'https://github.com/byPixelTV/SkRedis/releases'>https://github.com/byPixelTV/SkRedis/releases</click></color>"))

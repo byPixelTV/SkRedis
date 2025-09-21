@@ -54,11 +54,11 @@ class SecRunAsync : EffectSection() {
 
         val localVars = AtomicReference(Variables.copyLocalVariables(e))
 
-        Bukkit.getScheduler().runTaskAsynchronously(Main.instance, Runnable {
+        Main.instance.scheduler.runTaskAsynchronously {
             Variables.setLocalVariables(e, localVars.get())
             walkSectionWithCancelCheck(e)
             clear(e)
-        })
+        }
 
         return next
     }

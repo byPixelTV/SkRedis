@@ -50,6 +50,8 @@ dependencies {
     library("org.jetbrains.kotlin:kotlin-reflect:2.2.20")
     library("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     library("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.10.2")
+
+    implementation("com.github.Anon8281:UniversalScheduler:0.1.7")
 }
 
 sourceSets {
@@ -79,6 +81,8 @@ tasks {
         }
 
         minimize()
+
+        relocate("com.github.Anon8281.universalScheduler", "dev.bypixel.skredis.lib.universalscheduler")
     }
 
     runServer {
@@ -127,7 +131,7 @@ paper {
 
     version = versionString
 
-    foliaSupported = false
+    foliaSupported = true
 
     description = "A Skript-Addon to interact with Redis."
 

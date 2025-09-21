@@ -17,7 +17,7 @@ object IngameUpdateChecker {
                 val currentVersion = Main.instance.description.version
                 val updateVersion = UpdateChecker(Main.instance).getUpdateVersion(currentVersion)
 
-                Bukkit.getScheduler().runTaskLater(Main.instance, Runnable {
+                Main.instance.scheduler.runTaskLater({
                     updateVersion.thenApply { version ->
                         player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> update available: <green>$version</green>"))
                         player.sendMessage(miniMessages.deserialize("<dark_grey>[<gradient:blue:aqua:blue>SkRedis</gradient>]</dark_grey> download at <aqua><click:open_url:'https://github.com/byPixelTV/skRedis/releases'>https://github.com/byPixelTV/skRedis/releases</click></aqua>"))

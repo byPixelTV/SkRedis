@@ -64,7 +64,7 @@ class UpdateChecker(private val plugin: Main) : Listener {
         if (UPDATE_VERSION != null) {
             future.complete(UPDATE_VERSION)
         } else {
-            Bukkit.getScheduler().runTaskAsynchronously(this.plugin, Runnable {
+            Main.instance.scheduler.runTaskAsynchronously {
                 getLatestReleaseVersion(Consumer { version ->
                     val plugVer = Version(currentVersion)
                     val curVer = Version(version)
@@ -75,7 +75,7 @@ class UpdateChecker(private val plugin: Main) : Listener {
                         future.complete(UPDATE_VERSION)
                     }
                 })
-            })
+            }
         }
         return future
     }
