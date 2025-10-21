@@ -76,8 +76,14 @@ jobs:
         run: |
           TAG=${{ steps.version.outputs.new_tag }}
           STRIPPED=${TAG#v}
-
-          cp build/libs/*.jar "SkRedis-${STRIPPED}.jar"
+          echo "Current directory: $(pwd)"
+          echo "Workspace: ${{ github.workspace }}"
+          ls -la
+          ls -la build/libs/
+          cp build/libs/*.jar "${{ github.workspace }}/SkRedis-${STRIPPED}.jar"
+          
+          # Verifiziere dass die Datei existiert
+          ls -la "${{ github.workspace }}/SkRedis-${STRIPPED}.jar"
           
           echo "jar=SkRedis-${STRIPPED}.jar" >> $GITHUB_OUTPUT
 
