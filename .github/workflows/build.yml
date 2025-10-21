@@ -62,7 +62,36 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build Gradle projects
-        run: ./gradlew shadowJar
+        run: bash ./gradlew shadowJar
+
+      - name: Prepare artifact filename
+        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
+        id: artifact_name
+        run: |
+          TAG=${{ steps.version.outputs.new_tag }}
+          STRIPPED=${TAG#v}
+          echo "jar=build/libs/SkRedis-${STRIPPED}.jar" >> $GITHUB_OUTPUT
+
+      # only executed if build was successful and branch is release
+      - name: Publish to Modrinth
+        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
+        uses: cloudnode-pro/modrinth-publish@v2
+        with:
+          token: ${{ secrets.MODRINTH_TOKEN }}
+          project: 3R33dfbs
+          name: ${{ steps.version.outputs.new_tag }}
+          version: ${{ steps.version.outputs.new_tag }}
+          changelog: ${{ github.workspace }}/RELEASE_NOTES.md
+          channel: release
+          featured: true
+          loaders: |-
+            paper
+            purpur
+          game-versions: |-
+            1.21.8
+            1.21.9
+            1.21.10
+          files: ${{ steps.artifact_name.outputs.jar }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -113,31 +142,3 @@ jobs:
           name: "Release ${{ steps.version.outputs.new_tag }}"
           body_path: RELEASE_NOTES.md
           files: build/libs/*.jar
-
-      - name: Prepare artifact filename
-        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
-        id: artifact_name
-        run: |
-          TAG=${{ steps.version.outputs.new_tag }}
-          STRIPPED=${TAG#v}
-          echo "jar=build/libs/SkRedis-${STRIPPED}.jar" >> $GITHUB_OUTPUT
-
-      - name: Publish to Modrinth
-        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
-        uses: cloudnode-pro/modrinth-publish@v2
-        with:
-          token: ${{ secrets.MODRINTH_TOKEN }}
-          project: 3R33dfbs
-          name: ${{ steps.version.outputs.new_tag }}
-          version: ${{ steps.version.outputs.new_tag }}
-          changelog: ${{ github.workspace }}/RELEASE_NOTES.md
-          channel: release
-          featured: true
-          loaders: |-
-            paper
-            purpur
-          game-versions: |-
-            1.21.8
-            1.21.9
-            1.21.10
-          files: ${{ steps.artifact_name.outputs.jar }}
