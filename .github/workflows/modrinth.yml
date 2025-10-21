@@ -1,8 +1,9 @@
 name: Publish Modrinth
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   publish:
@@ -50,4 +51,6 @@ jobs:
             purpur
           game-versions: |-
             1.21.8
+            1.21.9
+            1.21.10
           files: build/libs/SkRedis-${{ env.VERSION }}.jar
