@@ -114,6 +114,14 @@ jobs:
           body_path: RELEASE_NOTES.md
           files: build/libs/*.jar
 
+      - name: Prepare artifact filename
+        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
+        id: artifact_name
+        run: |
+          TAG=${{ steps.version.outputs.new_tag }}
+          STRIPPED=${TAG#v}
+          echo "jar=build/libs/SkRedis-${STRIPPED}.jar" >> $GITHUB_OUTPUT
+
       - name: Publish to Modrinth
         if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
         uses: cloudnode-pro/modrinth-publish@v2
@@ -132,4 +140,4 @@ jobs:
             1.21.8
             1.21.9
             1.21.10
-          files: build/libs/SkRedis-${{ steps.version.outputs.new_tag }}.jar
+          files: ${{ steps.artifact_name.outputs.jar }}
