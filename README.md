@@ -10,7 +10,7 @@
 </a>
 
 
-![Jenkins Build](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.bypixel.dev%2Fjob%2Fskredis%2F&style=for-the-badge)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/byPixelTV/SkRedis/build.yml?branch=release&style=for-the-badge)
 ![GitHub issues](https://img.shields.io/github/issues-raw/byPixelTV/skRedis?style=for-the-badge)
 ![GitHub All Downloads](https://img.shields.io/github/downloads/byPixelTV/skRedis/total?style=for-the-badge)
 

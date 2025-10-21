@@ -64,15 +64,23 @@ jobs:
       - name: Build Gradle projects
         run: bash ./gradlew shadowJar
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/libs/*.jar
+
       - name: Prepare artifact filename
         if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
         id: artifact_name
         run: |
           TAG=${{ steps.version.outputs.new_tag }}
           STRIPPED=${TAG#v}
-          echo "jar=build/libs/SkRedis-${STRIPPED}.jar" >> $GITHUB_OUTPUT
 
-      # only executed if build was successful and branch is release
+          cp build/libs/*.jar "SkRedis-${STRIPPED}.jar"
+          
+          echo "jar=SkRedis-${STRIPPED}.jar" >> $GITHUB_OUTPUT
+
       - name: Publish to Modrinth
         if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
         uses: cloudnode-pro/modrinth-publish@v2
@@ -92,12 +100,6 @@ jobs:
             1.21.9
             1.21.10
           files: ${{ steps.artifact_name.outputs.jar }}
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: build/libs/*.jar
 
       - name: Generate changelog
         if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
