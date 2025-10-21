@@ -31,7 +31,7 @@ val commandAPIVersion = "10.1.2"
 val skriptVersion = "2.13.0"
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
 
     library("dev.jorel:commandapi-bukkit-shade-mojang-mapped:$commandAPIVersion")
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
@@ -86,13 +86,11 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.7")
+        minecraftVersion("1.21.10")
 
         downloadPlugins {
             url("https://github.com/SkriptLang/Skript/releases/download/$skriptVersion/Skript-${skriptVersion}.jar")
             url("https://github.com/SkriptHub/SkriptHubDocsTool/releases/download/1.14/skripthubdocstool-1.14.jar")
-            modrinth("viaversion", "5.4.2")
-            modrinth("viabackwards", "5.4.2")
         }
     }
 }
@@ -127,7 +125,7 @@ paper {
 
     authors = listOf("byPixelTV")
 
-    apiVersion = "1.21.8"
+    apiVersion = "1.21"
 
     version = versionString
 

@@ -1,0 +1,103 @@
+name: Build & Release
+
+on:
+  push:
+    branches:
+      - release
+      - nightly
+
+jobs:
+  build_release:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Fetch all Git tags
+        run: git fetch --tags
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: gradle
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build Gradle projects
+        run: ./gradlew shadowJar
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/libs/*.jar
+
+      - name: Get next version
+        if: github.ref == 'refs/heads/release'
+        id: version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: release
+          tag_prefix: "v"
+
+      # 🧠 Generate changelog with custom template
+      - name: Generate changelog
+        if: github.ref == 'refs/heads/release'
+        id: changelog
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --max-count=1))
+          CURR_TAG=${{ steps.version.outputs.new_tag }}
+
+          echo "> # ☁️ Information 🚩:" > RELEASE_NOTES.md
+          echo "> - You will need a Redis Database" >> RELEASE_NOTES.md
+          echo "> - You will only receive support if you are using the latest versions of Minecraft, Skript, and SkRedis. Additionally, you must have a basic understanding of Redis. I will not provide assistance with Redis in any way." >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "# 🍽️ Patches & Fixes 🧑🏼‍🍳:" >> RELEASE_NOTES.md
+          echo "If you want to suggest a feature, let me know that in the issue tracker!" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+
+          git log ${PREV_TAG}..HEAD --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H)) by %an" |
+          while read line; do
+            AUTHOR=$(echo "$line" | grep -oP 'by \K.*')
+            if [[ ! "$AUTHOR" =~ [Bb]ot ]]; then
+              USER=$(echo "$AUTHOR" | tr ' ' '-')
+              echo "${line/by $AUTHOR/by @$USER}" >> RELEASE_NOTES.md
+            else
+              echo "$line" >> RELEASE_NOTES.md
+            fi
+          done
+
+          echo "" >> RELEASE_NOTES.md
+          echo "- **Full Changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${CURR_TAG}" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "> # ⛏️ Minecraft Support 🎮:" >> RELEASE_NOTES.md
+          echo "> - SkRedis is only compatible with Minecraft version **1.21.8+**" >> RELEASE_NOTES.md
+          echo "> - I will only support the latest release of Minecraft, this mean that **1.21.8 is** supported, but **1.21.1 isn't!** If you want to get official support, you have to use the latest version of **Skript, SkRedis and Minecraft!**" >> RELEASE_NOTES.md
+          echo "> # 📝 Skript Support 📑:" >> RELEASE_NOTES.md
+          echo "> - This version requires Skript 2.13+ to correctly run on your server" >> RELEASE_NOTES.md
+          echo ">" >> RELEASE_NOTES.md
+          echo "> # 🔥 Other stuff 🎉:" >> RELEASE_NOTES.md
+          echo "> - If you find any bugs tell me on [Discord](https://dsc.gg/byPixelTV) or use the GitHub issue tracker." >> RELEASE_NOTES.md
+          echo "Cheers! 🥂" >> RELEASE_NOTES.md
+          echo ">" >> RELEASE_NOTES.md
+          echo "> # 💻 Development Builds 🌐:" >> RELEASE_NOTES.md
+          echo "> - **Development Builds:** https://github.com/byPixelTV/SkRedis/actions" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "[![SkriptHubViewTheDocs](http://skripthub.net/static/addon/ViewTheDocsButton.png)](http://skripthub.net/docs/?addon=SkRedis)" >> RELEASE_NOTES.md
+
+      # 📦 Create GitHub Release with template + changelog
+      - name: Create GitHub Release (release)
+        if: github.ref == 'refs/heads/release'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.new_tag }}
+          name: "Release ${{ steps.version.outputs.new_tag }}"
+          body_path: RELEASE_NOTES.md
+          files: build/libs/*.jar
