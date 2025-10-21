@@ -24,6 +24,33 @@ jobs:
       - name: Fetch all Git tags
         run: git fetch --tags
 
+      - name: Check for new commits since last tag
+        if: github.ref == 'refs/heads/release'
+        id: check_commits
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "last_tag=$LAST_TAG" >> $GITHUB_OUTPUT
+
+          if [ -z "$LAST_TAG" ]; then
+            echo "no_last_tag=true" >> $GITHUB_OUTPUT
+          else
+            NEW_COMMITS=$(git log ${LAST_TAG}..HEAD --oneline)
+            if [ -z "$NEW_COMMITS" ]; then
+              echo "no_new_commits=true" >> $GITHUB_OUTPUT
+            else
+              echo "no_new_commits=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Get next version
+        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
+        id: version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: release
+          tag_prefix: "v"
+
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
@@ -43,22 +70,13 @@ jobs:
           name: build-artifacts
           path: build/libs/*.jar
 
-      - name: Get next version
-        if: github.ref == 'refs/heads/release'
-        id: version
-        uses: mathieudutour/github-tag-action@v6.2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: release
-          tag_prefix: "v"
-
       - name: Generate changelog
-        if: github.ref == 'refs/heads/release'
+        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
         id: changelog
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PREV_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --max-count=1))
+          PREV_TAG=${{ steps.check_commits.outputs.last_tag }}
           CURR_TAG=${{ steps.version.outputs.new_tag }}
 
           echo "> # ☁️ Information 🚩:" > RELEASE_NOTES.md
@@ -102,9 +120,8 @@ jobs:
           echo "" >> RELEASE_NOTES.md
           echo "[![SkriptHubViewTheDocs](http://skripthub.net/static/addon/ViewTheDocsButton.png)](http://skripthub.net/docs/?addon=SkRedis)" >> RELEASE_NOTES.md
 
-      # 📦 Create GitHub Release with template + changelog
       - name: Create GitHub Release (release)
-        if: github.ref == 'refs/heads/release'
+        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.new_tag }}
