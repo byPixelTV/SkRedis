@@ -7,7 +7,55 @@ plugins {
     id("com.gradleup.shadow") version "9.2.2"
 }
 
-val versionString = "2.0.1"
+fun getLatestTag(): String {
+    try {
+        // fetch all tags (remote + local)
+        ProcessBuilder("git", "fetch", "--tags")
+            .redirectErrorStream(true)
+            .start()
+            .apply {
+                inputStream.bufferedReader().use { it.readText() }
+                waitFor()
+            }
+
+        // get current branch
+        val branch = ProcessBuilder("git", "rev-parse", "--abbrev-ref", "HEAD")
+            .redirectErrorStream(true)
+            .start()
+            .inputStream
+            .bufferedReader()
+            .use { it.readText().trim() }
+
+        // get latest tag
+        val tagProcess = ProcessBuilder("git", "describe", "--tags", "--abbrev=0")
+            .redirectErrorStream(true)
+            .start()
+
+        val rawTag = tagProcess.inputStream.bufferedReader().use { it.readText().trim() }
+        tagProcess.waitFor()
+
+        if (rawTag.isEmpty()) return "unknown"
+
+        val tag = rawTag.removePrefix("v")
+
+        return if (branch == "release") {
+            tag
+        } else {
+            // get short commit hash
+            val commitProcess = ProcessBuilder("git", "rev-parse", "--short", "HEAD")
+                .redirectErrorStream(true)
+                .start()
+            val commit = commitProcess.inputStream.bufferedReader().use { it.readText().trim() }
+            commitProcess.waitFor()
+
+            "$tag+$commit"
+        }
+    } catch (e: Exception) {
+        return "unknown"
+    }
+}
+
+val versionString = getLatestTag()
 
 group = "dev.bypixel"
 version = versionString
