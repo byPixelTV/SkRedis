@@ -52,10 +52,11 @@ jobs:
           release_branches: release
           tag_prefix: "v"
 
-      # 🧠 Generate changelog with custom template
       - name: Generate changelog
         if: github.ref == 'refs/heads/release'
         id: changelog
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PREV_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --max-count=1))
           CURR_TAG=${{ steps.version.outputs.new_tag }}
@@ -68,14 +69,18 @@ jobs:
           echo "If you want to suggest a feature, let me know that in the issue tracker!" >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
 
-          git log ${PREV_TAG}..HEAD --pretty=format:"- %s ([%h](https://github.com/${{ github.repository }}/commit/%H)) by %an" |
-          while read line; do
-            AUTHOR=$(echo "$line" | grep -oP 'by \K.*')
-            if [[ ! "$AUTHOR" =~ [Bb]ot ]]; then
-              USER=$(echo "$AUTHOR" | tr ' ' '-')
-              echo "${line/by $AUTHOR/by @$USER}" >> RELEASE_NOTES.md
+          git log ${PREV_TAG}..HEAD --pretty=format:"%H|%s" | while IFS="|" read -r COMMIT_HASH MESSAGE; do
+            AUTHOR_LOGIN=$(gh api repos/${{ github.repository }}/commits/$COMMIT_HASH --jq '.author.login // empty')
+            AUTHOR_NAME=$(gh api repos/${{ github.repository }}/commits/$COMMIT_HASH --jq '.commit.author.name // empty')
+
+            if [[ "$AUTHOR_LOGIN" == *"bot"* ]]; then
+              echo "- $MESSAGE ([${COMMIT_HASH:0:7}](https://github.com/${{ github.repository }}/commit/$COMMIT_HASH)) by $AUTHOR_NAME" >> RELEASE_NOTES.md
             else
-              echo "$line" >> RELEASE_NOTES.md
+              if [[ -n "$AUTHOR_LOGIN" ]]; then
+                echo "- $MESSAGE ([${COMMIT_HASH:0:7}](https://github.com/${{ github.repository }}/commit/$COMMIT_HASH)) by @$AUTHOR_LOGIN" >> RELEASE_NOTES.md
+              else
+                echo "- $MESSAGE ([${COMMIT_HASH:0:7}](https://github.com/${{ github.repository }}/commit/$COMMIT_HASH)) by $AUTHOR_NAME" >> RELEASE_NOTES.md
+              fi
             fi
           done
 
