@@ -122,7 +122,7 @@ jobs:
           project: 3R33dfbs
           name: ${{ steps.version.outputs.new_tag }}
           version: ${{ steps.version.outputs.new_tag }}
-          changelog: ${{ github_release.outputs.body }}
+          changelog: ${{ github.workspace }}/RELEASE_NOTES.md
           channel: release
           featured: true
           loaders: |-
