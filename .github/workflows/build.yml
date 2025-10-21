@@ -1,4 +1,4 @@
-name: Build & Release
+name: Build, Release & Publish Modrinth
 
 permissions:
   contents: write
@@ -81,10 +81,9 @@ jobs:
 
           echo "> # ☁️ Information 🚩:" > RELEASE_NOTES.md
           echo "> - You will need a Redis Database" >> RELEASE_NOTES.md
-          echo "> - You will only receive support if you are using the latest versions of Minecraft, Skript, and SkRedis. Additionally, you must have a basic understanding of Redis. I will not provide assistance with Redis in any way." >> RELEASE_NOTES.md
+          echo "> - You will only receive support if you are using the latest versions of Minecraft, Skript, and SkRedis." >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
           echo "# 🍽️ Patches & Fixes 🧑🏼‍🍳:" >> RELEASE_NOTES.md
-          echo "If you want to suggest a feature, let me know that in the issue tracker!" >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
 
           git log ${PREV_TAG}..HEAD --pretty=format:"%H|%s" | while IFS="|" read -r COMMIT_HASH MESSAGE; do
@@ -104,27 +103,33 @@ jobs:
 
           echo "" >> RELEASE_NOTES.md
           echo "- **Full Changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${CURR_TAG}" >> RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-          echo "> # ⛏️ Minecraft Support 🎮:" >> RELEASE_NOTES.md
-          echo "> - SkRedis is only compatible with Minecraft version **1.21.8+**" >> RELEASE_NOTES.md
-          echo "> - I will only support the latest release of Minecraft, this mean that **1.21.8 is** supported, but **1.21.1 isn't!** If you want to get official support, you have to use the latest version of **Skript, SkRedis and Minecraft!**" >> RELEASE_NOTES.md
-          echo "> # 📝 Skript Support 📑:" >> RELEASE_NOTES.md
-          echo "> - This version requires Skript 2.13+ to correctly run on your server" >> RELEASE_NOTES.md
-          echo ">" >> RELEASE_NOTES.md
-          echo "> # 🔥 Other stuff 🎉:" >> RELEASE_NOTES.md
-          echo "> - If you find any bugs tell me on [Discord](https://dsc.gg/byPixelTV) or use the GitHub issue tracker." >> RELEASE_NOTES.md
-          echo "Cheers! 🥂" >> RELEASE_NOTES.md
-          echo ">" >> RELEASE_NOTES.md
-          echo "> # 💻 Development Builds 🌐:" >> RELEASE_NOTES.md
-          echo "> - **Development Builds:** https://github.com/byPixelTV/SkRedis/actions" >> RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-          echo "[![SkriptHubViewTheDocs](http://skripthub.net/static/addon/ViewTheDocsButton.png)](http://skripthub.net/docs/?addon=SkRedis)" >> RELEASE_NOTES.md
 
-      - name: Create GitHub Release (release)
+      - name: Create GitHub Release
         if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
+        id: github_release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.new_tag }}
           name: "Release ${{ steps.version.outputs.new_tag }}"
           body_path: RELEASE_NOTES.md
           files: build/libs/*.jar
+
+      - name: Publish to Modrinth
+        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
+        uses: cloudnode-pro/modrinth-publish@v2
+        with:
+          token: ${{ secrets.MODRINTH_TOKEN }}
+          project: 3R33dfbs
+          name: ${{ steps.version.outputs.new_tag }}
+          version: ${{ steps.version.outputs.new_tag }}
+          changelog: ${{ github_release.outputs.body }}
+          channel: release
+          featured: true
+          loaders: |-
+            paper
+            purpur
+          game-versions: |-
+            1.21.8
+            1.21.9
+            1.21.10
+          files: build/libs/SkRedis-${{ steps.version.outputs.new_tag }}.jar
