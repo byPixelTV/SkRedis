@@ -9,7 +9,7 @@ plugins {
 
 fun getLatestTag(): String {
     try {
-        // fetch all tags (remote + local)
+        // Fetch all tags
         ProcessBuilder("git", "fetch", "--tags")
             .redirectErrorStream(true)
             .start()
@@ -18,7 +18,6 @@ fun getLatestTag(): String {
                 waitFor()
             }
 
-        // get current branch
         val branch = ProcessBuilder("git", "rev-parse", "--abbrev-ref", "HEAD")
             .redirectErrorStream(true)
             .start()
@@ -26,29 +25,31 @@ fun getLatestTag(): String {
             .bufferedReader()
             .use { it.readText().trim() }
 
-        // get latest tag
+        // Try to get latest tag
         val tagProcess = ProcessBuilder("git", "describe", "--tags", "--abbrev=0")
             .redirectErrorStream(true)
             .start()
-
         val rawTag = tagProcess.inputStream.bufferedReader().use { it.readText().trim() }
         tagProcess.waitFor()
 
-        if (rawTag.isEmpty()) return "unknown"
+        val hasTag = rawTag.isNotEmpty() && !rawTag.startsWith("fatal:")
 
-        val tag = rawTag.removePrefix("v")
+        // Always get commit hash (works even if no tag)
+        val commitProcess = ProcessBuilder("git", "rev-parse", "--short", "HEAD")
+            .redirectErrorStream(true)
+            .start()
+        val commit = commitProcess.inputStream.bufferedReader().use { it.readText().trim() }
+        commitProcess.waitFor()
 
-        return if (branch == "release") {
-            tag
+        // If no commit found (super rare, empty repo)
+        if (commit.isEmpty()) return "unknown"
+
+        return if (hasTag) {
+            val tag = rawTag.removePrefix("v")
+            if (branch == "release") tag else "$tag+$commit"
         } else {
-            // get short commit hash
-            val commitProcess = ProcessBuilder("git", "rev-parse", "--short", "HEAD")
-                .redirectErrorStream(true)
-                .start()
-            val commit = commitProcess.inputStream.bufferedReader().use { it.readText().trim() }
-            commitProcess.waitFor()
-
-            "$tag+$commit"
+            // no tag → default to 1.0.0 + commit
+            "1.0.0+$commit"
         }
     } catch (e: Exception) {
         return "unknown"
