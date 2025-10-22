@@ -70,43 +70,6 @@ jobs:
           name: build-artifacts
           path: build/libs/*.jar
 
-      - name: Prepare artifact filename
-        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
-        id: artifact_name
-        run: |
-          TAG=${{ steps.version.outputs.new_tag }}
-          STRIPPED=${TAG#v}
-          echo "Current directory: $(pwd)"
-          echo "Workspace: ${{ github.workspace }}"
-          ls -la
-          ls -la build/libs/
-          cp build/libs/*.jar "${{ github.workspace }}/SkRedis-${STRIPPED}.jar"
-          
-          # Verifiziere dass die Datei existiert
-          ls -la "${{ github.workspace }}/SkRedis-${STRIPPED}.jar"
-          
-          echo "jar=SkRedis-${STRIPPED}.jar" >> $GITHUB_OUTPUT
-
-      - name: Publish to Modrinth
-        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
-        uses: cloudnode-pro/modrinth-publish@v2
-        with:
-          token: ${{ secrets.MODRINTH_TOKEN }}
-          project: 3R33dfbs
-          name: ${{ steps.version.outputs.new_tag }}
-          version: ${{ steps.version.outputs.new_tag }}
-          changelog: ${{ github.workspace }}/RELEASE_NOTES.md
-          channel: release
-          featured: true
-          loaders: |-
-            paper
-            purpur
-          game-versions: |-
-            1.21.8
-            1.21.9
-            1.21.10
-          files: ${{ steps.artifact_name.outputs.jar }}
-
       - name: Generate changelog
         if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
         id: changelog
@@ -150,3 +113,43 @@ jobs:
           name: "Release ${{ steps.version.outputs.new_tag }}"
           body_path: RELEASE_NOTES.md
           files: build/libs/*.jar
+
+      - name: Prepare artifact filename
+        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
+        id: artifact_name
+        run: |
+          TAG=${{ steps.version.outputs.new_tag }}
+          STRIPPED=${TAG#v}
+
+          cp build/libs/*.jar "SkRedis-${STRIPPED}.jar"
+          
+          echo "jar=SkRedis-${STRIPPED}.jar" >> $GITHUB_OUTPUT
+
+      - name: Publish to Modrinth
+        if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: 3R33dfbs
+          modrinth-featured: true
+          modrinth-unfeature-mode: true
+
+          changelog-file: RELEASE_NOTES.md
+
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          files: ${{ steps.artifact_name.outputs.jar }}
+
+          name: SkRedis ${{ steps.version.outputs.new_tag }}
+          version-type: release
+          version: ${{ steps.version.outputs.new_tag }}
+          loaders: |
+            purpur
+            paper
+          game-versions: |
+            1.21.8
+            1.21.9
+            1.21.10
+          java: |
+            Java 21
+          retry-attempts: 2
+          retry-delay: 10000
+          fail-mode: fail
