@@ -123,7 +123,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.new_tag }}
-          name: "Release ${{ steps.version.outputs.new_tag }}"
+          name: "SkRedis | ${{ steps.version.outputs.new_tag }} Release"
           body_path: RELEASE_NOTES.md
           files: build/libs/*.jar
 
