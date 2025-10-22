@@ -131,7 +131,6 @@ jobs:
         with:
           modrinth-id: 3R33dfbs
           modrinth-featured: true
-          modrinth-unfeature-mode: true
 
           changelog-file: RELEASE_NOTES.md
 
