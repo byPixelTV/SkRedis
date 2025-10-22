@@ -103,6 +103,19 @@ jobs:
 
           echo "" >> RELEASE_NOTES.md
           echo "- **Full Changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${CURR_TAG}" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "> # ⛏️ Minecraft Support 🎮:" >> RELEASE_NOTES.md
+          echo "> - SkRedis is only compatible with Minecraft version **1.21.8+**" >> RELEASE_NOTES.md
+          echo "> - I will only support the latest release of Minecraft, this mean that **1.21.8+ is** supported, but **1.21 isn't!** If you want to get official support, you have to use the latest version of **Skript, SkRedis, NoteBlockAPI and Minecraft!**" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "> # 📝 Skript Support 📑:" >> RELEASE_NOTES.md
+          echo "> - This version requires Skript 2.13+ to correctly run on your server" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "> # 🔥 Other stuff 🎉:" >> RELEASE_NOTES.md
+          echo "> - If you find any bugs tell me on [Discord](https://dsc.gg/byPixelTV) or use the GitHub issue tracker." >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "> # 💻 Development Builds 🌐:" >> RELEASE_NOTES.md
+          echo "> - **Development  Builds:** https://github.com/byPixelTV/SkRedis/actions" >> RELEASE_NOTES.md
 
       - name: Create GitHub Release
         if: github.ref == 'refs/heads/release' && steps.check_commits.outputs.no_new_commits != 'true'
