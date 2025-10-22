@@ -48,7 +48,7 @@
 
 > 
 > # 💻 Development Builds 🌐:
-> - **Development  Builds:** https://ci.bypixel.dev/job/skredis/
+> - **Development  Builds:** https://github.com/byPixelTV/SkRedis/actions
 </div>
 
 <div align="center">
