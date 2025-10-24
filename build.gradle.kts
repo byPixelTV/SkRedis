@@ -86,7 +86,7 @@ dependencies {
     library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
     library("org.yaml:snakeyaml:2.5")
     library("net.axay:kspigot:1.21.0")
-    library("io.lettuce:lettuce-core:6.8.1.RELEASE") {
+    library("io.lettuce:lettuce-core:7.0.0.RELEASE") {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-reactive")
     }
