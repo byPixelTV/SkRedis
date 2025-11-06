@@ -27,6 +27,7 @@ public class SkRedisPluginLoader implements PluginLoader {
         pluginLibraries.asRepositories().forEach(resolver::addRepository);
 
         classpathBuilder.addLibrary(resolver);
+        System.setProperty("io.netty.transport.noNative", "true");
     }
 
     public PluginLibraries load() {

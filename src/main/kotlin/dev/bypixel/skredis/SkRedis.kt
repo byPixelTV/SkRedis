@@ -50,6 +50,7 @@ class SkRedis : KSpigot() {
 
     override fun startup() {
         instance = this
+
         scheduler = UniversalScheduler.getScheduler(this)
 
         CommandAPI.onEnable()
