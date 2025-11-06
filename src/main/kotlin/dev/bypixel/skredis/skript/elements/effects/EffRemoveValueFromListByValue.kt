@@ -9,10 +9,9 @@ import ch.njol.skript.lang.Effect
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.Main
+import dev.bypixel.skredis.SkRedis
+import dev.bypixel.skredis.SkRedisCoroutineScope
 import dev.bypixel.skredis.SkRedisLogger
-import dev.bypixel.skredis.lettuce.LettuceRedisClient
-import dev.bypixel.skredis.utils.SkRedisCoroutineScope
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,21 +51,21 @@ class EffRemoveValueFromListByValue : Effect() {
 
     @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = Main.instance
+        val plugin = SkRedis.instance
 
         val listVal = listValue!!.getSingle(e)
         if (listVal == null) {
-            SkRedisLogger.error(plugin, "Redis list value was empty. Please check your code.")
+            SkRedisLogger.error("Redis list value was empty. Please check your code.")
             return
         }
         val listKey = listKey!!.getSingle(e)
         if (listKey == null) {
-            SkRedisLogger.error(plugin, "Redis list key was empty. Please check your code.")
+            SkRedisLogger.error("Redis list key was empty. Please check your code.")
             return
         }
 
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            LettuceRedisClient.commands.lrem(listKey, 0, listVal)
+            SkRedis.instance.lettuceClient.commands.lrem(listKey, 0, listVal)
         }
     }
 }

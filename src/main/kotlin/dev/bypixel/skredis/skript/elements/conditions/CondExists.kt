@@ -9,7 +9,7 @@ import ch.njol.skript.lang.Condition
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.lettuce.LettuceRedisClient
+import dev.bypixel.skredis.SkRedis
 import org.bukkit.event.Event
 
 @Name("Redis Keys - exists")
@@ -43,7 +43,7 @@ class CondExists : Condition() {
 
     override fun check(e: Event?): Boolean {
         val key = key?.getSingle(e) ?: return false
-        return LettuceRedisClient.sync.exists(key) == 0L != isNegated
+        return SkRedis.instance.lettuceClient.sync.exists(key) == 0L != isNegated
     }
 
     override fun toString(e: Event?, debug: Boolean): String {

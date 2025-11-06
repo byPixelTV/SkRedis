@@ -9,10 +9,9 @@ import ch.njol.skript.lang.Effect
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.Main
+import dev.bypixel.skredis.SkRedis
+import dev.bypixel.skredis.SkRedisCoroutineScope
 import dev.bypixel.skredis.SkRedisLogger
-import dev.bypixel.skredis.lettuce.LettuceRedisClient
-import dev.bypixel.skredis.utils.SkRedisCoroutineScope
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,21 +51,21 @@ class EffDeleteRedisHashField : Effect() {
 
     @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = Main.instance
+        val plugin = SkRedis.instance
 
         val fieldName = fieldName!!.getSingle(e)
         if (fieldName == null) {
-            SkRedisLogger.error(plugin, "Redis hash field name was empty. Please check your code.")
+            SkRedisLogger.error("Redis hash field name was empty. Please check your code.")
             return
         }
         val hashKey = hashKey!!.getSingle(e)
         if (hashKey == null) {
-            SkRedisLogger.error(plugin, "Redis hash key was empty. Please check your code.")
+            SkRedisLogger.error("Redis hash key was empty. Please check your code.")
             return
         }
 
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            LettuceRedisClient.commands.hdel(hashKey, fieldName)
+            SkRedis.instance.lettuceClient.commands.hdel(hashKey, fieldName)
         }
     }
 }

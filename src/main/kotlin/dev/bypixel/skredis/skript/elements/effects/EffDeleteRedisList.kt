@@ -9,9 +9,8 @@ import ch.njol.skript.lang.Effect
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.Main
-import dev.bypixel.skredis.lettuce.LettuceRedisClient
-import dev.bypixel.skredis.utils.SkRedisCoroutineScope
+import dev.bypixel.skredis.SkRedis
+import dev.bypixel.skredis.SkRedisCoroutineScope
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,12 +48,12 @@ class EffDeleteRedisList : Effect() {
 
     @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = Main.instance
+        val plugin = SkRedis.instance
 
         val listName = this.listName?.getSingle(e) ?: return
 
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            LettuceRedisClient.commands.del(listName)
+            SkRedis.instance.lettuceClient.commands.del(listName)
         }
     }
 }

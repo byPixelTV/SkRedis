@@ -1,9 +1,9 @@
-package dev.bypixel.skredis.lettuce
+package dev.bypixel.skredis.pubsub
 
-import dev.bypixel.skredis.Main
+import dev.bypixel.lettucewrapper.listener.RedisListener
+import dev.bypixel.skredis.SkRedis
 import dev.bypixel.skredis.events.CustomRedisMessageEvent
 import dev.bypixel.skredis.events.RedisMessageEvent
-import dev.bypixel.skredis.lettuce.listener.RedisListener
 import org.json.JSONObject
 
 object RedisListenerImpl : RedisListener(listenToAll = true) {
@@ -15,11 +15,11 @@ object RedisListenerImpl : RedisListener(listenToAll = true) {
                     "skredis-message" -> {
                         val msg = jMsg.getString("message")
                         val date = jMsg.getLong("date")
-                        Main.instance.server.pluginManager.callEvent(RedisMessageEvent(channel, msg, date))
+                        SkRedis.instance.server.pluginManager.callEvent(RedisMessageEvent(channel, msg, date))
                     }
                 }
             } else {
-                Main.instance.server.pluginManager.callEvent(CustomRedisMessageEvent(channel, jMsg.toString()))
+                SkRedis.instance.server.pluginManager.callEvent(CustomRedisMessageEvent(channel, jMsg.toString()))
             }
         } catch (_: Exception) {
             // Ignored, not a json message

@@ -9,10 +9,9 @@ import ch.njol.skript.lang.Effect
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.Main
+import dev.bypixel.skredis.SkRedis
+import dev.bypixel.skredis.SkRedisCoroutineScope
 import dev.bypixel.skredis.SkRedisLogger
-import dev.bypixel.skredis.lettuce.LettuceRedisClient
-import dev.bypixel.skredis.utils.SkRedisCoroutineScope
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,25 +55,25 @@ class EffSendCustomMessage : Effect() {
 
     @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(event: Event?) {
-        val plugin = Main.instance
+        val plugin = SkRedis.instance
 
 
         val message = message!!.getSingle(event)
         val channel = channel!!.getSingle(event)
         if (message == null) {
-            SkRedisLogger.error(plugin, "Message was empty. Please check your code.")
+            SkRedisLogger.error("Message was empty. Please check your code.")
             return
         }
         if (channel == null) {
-            SkRedisLogger.error(plugin, "Channel was empty. Please check your code.")
+            SkRedisLogger.error("Channel was empty. Please check your code.")
             return
         }
         try {
             SkRedisCoroutineScope.launch(Dispatchers.IO) {
-                LettuceRedisClient.sendCustomMessage(JSONObject(message), channel)
+                SkRedis.instance.lettuceClient.sendMessage(JSONObject(message), channel)
             }
         } catch (e: Exception) {
-            SkRedisLogger.warn(plugin, "A message was not sent. Please make sure your message is a valid JSON string.")
+            SkRedisLogger.warn("A message was not sent. Please make sure your message is a valid JSON string.")
             e.printStackTrace()
         }
     }

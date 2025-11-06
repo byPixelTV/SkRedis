@@ -1,4 +1,4 @@
-package dev.bypixel.skredis.utils
+package dev.bypixel.skredis
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -10,7 +10,7 @@ import ch.njol.skript.lang.ExpressionType
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.lettuce.LettuceRedisClient
+import dev.bypixel.skredis.SkRedis
 import org.bukkit.event.Event
 
 @Suppress("unused")
@@ -49,7 +49,7 @@ class ExprGetRedisString : SimpleExpression<String>() {
     override fun get(e: Event?): Array<String>? {
         val stringKey: String? = stringKey?.getSingle(e)
         if (stringKey != null) {
-            return LettuceRedisClient.sync.get(stringKey)?.let { arrayOf(it) }
+            return SkRedis.instance.lettuceClient.sync.get(stringKey)?.let { arrayOf(it) }
         }
         return null
     }

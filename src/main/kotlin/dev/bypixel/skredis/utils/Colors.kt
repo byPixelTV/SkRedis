@@ -5,7 +5,6 @@ enum class Colors(val hex: String) {
     SMOOTH_GREEN("<color:#2ecc71>"),
     PASTEL_GREEN("<color:#77dd77>"),
     MINT_GREEN_DARK("<color:#08FB95>"),
-    MINT_GREEN_LIGHT("<color:#B5FFE0>"),
 
     RED("<color:#ff0000>"),
     PASTEL_RED("<color:#ff6961>"),

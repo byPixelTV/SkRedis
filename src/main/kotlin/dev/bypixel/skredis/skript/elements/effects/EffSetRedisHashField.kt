@@ -9,10 +9,9 @@ import ch.njol.skript.lang.Effect
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.Main
+import dev.bypixel.skredis.SkRedis
+import dev.bypixel.skredis.SkRedisCoroutineScope
 import dev.bypixel.skredis.SkRedisLogger
-import dev.bypixel.skredis.lettuce.LettuceRedisClient
-import dev.bypixel.skredis.utils.SkRedisCoroutineScope
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,27 +53,27 @@ class EffSetRedisHashField : Effect() {
 
     @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = Main.instance
+        val plugin = SkRedis.instance
 
         val hashName = hashName?.getSingle(e)
         val fieldName = fieldName?.getSingle(e)
         val fieldValue = fieldValue?.getSingle(e)
 
         if (hashName == null) {
-            SkRedisLogger.error(plugin, "HashName was empty. Please check your code.")
+            SkRedisLogger.error("HashName was empty. Please check your code.")
             return
         }
         if (fieldName == null) {
-            SkRedisLogger.error(plugin, "FieldName was empty. Please check your code.")
+            SkRedisLogger.error("FieldName was empty. Please check your code.")
             return
         }
         if (fieldValue == null) {
-            SkRedisLogger.error(plugin, "FieldValue was empty. Please check your code.")
+            SkRedisLogger.error("FieldValue was empty. Please check your code.")
             return
         }
 
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            LettuceRedisClient.commands.hset(hashName, fieldName, fieldValue)
+            SkRedis.instance.lettuceClient.commands.hset(hashName, fieldName, fieldValue)
         }
     }
 }

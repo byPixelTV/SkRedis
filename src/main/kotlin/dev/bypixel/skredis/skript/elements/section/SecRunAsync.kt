@@ -12,8 +12,7 @@ import ch.njol.skript.lang.SkriptParser
 import ch.njol.skript.lang.TriggerItem
 import ch.njol.skript.variables.Variables
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.Main
-import org.bukkit.Bukkit
+import dev.bypixel.skredis.SkRedis
 import org.bukkit.event.Event
 import java.util.concurrent.atomic.AtomicReference
 
@@ -54,7 +53,7 @@ class SecRunAsync : EffectSection() {
 
         val localVars = AtomicReference(Variables.copyLocalVariables(e))
 
-        Main.instance.scheduler.runTaskAsynchronously {
+        SkRedis.instance.scheduler.runTaskAsynchronously {
             Variables.setLocalVariables(e, localVars.get())
             walkSectionWithCancelCheck(e)
             clear(e)

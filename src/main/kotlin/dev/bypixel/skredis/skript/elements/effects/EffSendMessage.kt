@@ -9,14 +9,14 @@ import ch.njol.skript.lang.Effect
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.Main
+import dev.bypixel.skredis.SkRedis
+import dev.bypixel.skredis.SkRedisCoroutineScope
 import dev.bypixel.skredis.SkRedisLogger
-import dev.bypixel.skredis.lettuce.LettuceRedisClient
-import dev.bypixel.skredis.utils.SkRedisCoroutineScope
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bukkit.event.Event
+import org.json.JSONObject
 
 @Suppress("unused")
 @Name("Redis Pub/Sub - send redis message")
@@ -55,25 +55,27 @@ class EffSendMessage : Effect() {
 
     @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(event: Event?) {
-        val plugin = Main.instance
-
-
         val message = message!!.getSingle(event)
         val channel = channel!!.getSingle(event)
         if (message == null) {
-            SkRedisLogger.error(plugin, "Message was empty. Please check your code.")
+            SkRedisLogger.error("Message was empty. Please check your code.")
             return
         }
         if (channel == null) {
-            SkRedisLogger.error(plugin, "Channel was empty. Please check your code.")
+            SkRedisLogger.error("Channel was empty. Please check your code.")
             return
         }
         try {
             SkRedisCoroutineScope.launch(Dispatchers.IO) {
-                LettuceRedisClient.sendMessage(message, channel)
+                val json = JSONObject().apply {
+                    put("message", message)
+                    put("action", "skredis-message")
+                    put("date", System.currentTimeMillis())
+                }
+                SkRedis.instance.lettuceClient.sendMessage(json, channel)
             }
         } catch (e: Exception) {
-            SkRedisLogger.error(plugin, "An error occurred while sending the message to the Redis server.")
+            SkRedisLogger.error("An error occurred while sending the message to the Redis server.")
             e.printStackTrace()
         }
     }

@@ -74,18 +74,31 @@ repositories {
     maven {
         url = uri("https://repo.skriptlang.org/releases")
     }
+
+    maven {
+        name = "bypixelRepoReleases"
+        url = uri("https://repo.bypixel.dev/releases")
+    }
+
+    maven {
+        name = "bypixelRepoSnapshots"
+        url = uri("https://repo.bypixel.dev/snapshots")
+    }
 }
 
-val commandAPIVersion = "10.1.2"
+val commandAPIVersion = "11.0.0"
 val skriptVersion = "2.13.1"
 
 dependencies {
+    library(kotlin("stdlib"))
+
     compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
 
-    library("dev.jorel:commandapi-bukkit-shade-mojang-mapped:$commandAPIVersion")
-    library("dev.jorel:commandapi-bukkit-kotlin:$commandAPIVersion")
-    library("org.yaml:snakeyaml:2.5")
+    library("dev.jorel:commandapi-paper-shade:$commandAPIVersion")
+    library("dev.jorel:commandapi-kotlin-paper:$commandAPIVersion")
+    library("dev.dejvokep:boosted-yaml:1.3.7")
     library("net.axay:kspigot:1.21.0")
+    library("dev.bypixel:LettuceWrapper:0.2.0")
     library("io.lettuce:lettuce-core:7.0.0.RELEASE") {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-reactive")
@@ -96,9 +109,9 @@ dependencies {
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
-    library("org.jetbrains.kotlin:kotlin-reflect:2.2.21")
     library("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     library("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.10.2")
+    library("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     implementation("com.github.Anon8281:UniversalScheduler:0.1.7")
 }
@@ -165,7 +178,7 @@ tasks {
 }
 
 paper {
-    main = "dev.bypixel.skredis.Main"
+    main = "dev.bypixel.skredis.SkRedis"
 
     loader = "dev.bypixel.skredis.SkRedisPluginLoader"
     hasOpenClassloader = false

@@ -10,7 +10,7 @@ import ch.njol.skript.lang.ExpressionType
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.lettuce.LettuceRedisClient
+import dev.bypixel.skredis.SkRedis
 import org.bukkit.event.Event
 
 @Suppress("unused")
@@ -57,7 +57,7 @@ class ExprGetHashFieldNamesByValue : SimpleExpression<String>() {
             return null
         }
 
-        val fieldNames: Array<String?> = LettuceRedisClient.sync.hgetall(hash).filterValues { it == value }.keys.toTypedArray()
+        val fieldNames: Array<String?> = SkRedis.instance.lettuceClient.sync.hgetall(hash).filterValues { it == value }.keys.toTypedArray()
 
         return if (fieldNames[0] != null) fieldNames.filterNotNull().toTypedArray() else null
     }

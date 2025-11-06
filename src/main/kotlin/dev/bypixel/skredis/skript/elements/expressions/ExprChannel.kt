@@ -11,8 +11,8 @@ import ch.njol.skript.lang.SkriptParser
 import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.skript.log.ErrorQuality
 import ch.njol.util.Kleenean
-import dev.bypixel.skredis.events.RedisMessageEvent
 import dev.bypixel.skredis.events.CustomRedisMessageEvent
+import dev.bypixel.skredis.events.RedisMessageEvent
 import org.bukkit.event.Event
 
 @Suppress("unused")
