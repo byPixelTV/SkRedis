@@ -76,7 +76,7 @@ repositories {
     }
 }
 
-val commandAPIVersion = "10.1.2"
+val commandAPIVersion = "11.0.0"
 val skriptVersion = "2.13.1"
 
 dependencies {
