@@ -51,7 +51,7 @@ fun getLatestTag(): String {
             // no tag → default to 1.0.0 + commit
             "1.0.0+$commit"
         }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         return "unknown"
     }
 }
@@ -98,7 +98,7 @@ dependencies {
     library("dev.jorel:commandapi-kotlin-paper:$commandAPIVersion")
     library("dev.dejvokep:boosted-yaml:1.3.7")
     library("net.axay:kspigot:1.21.0")
-    library("dev.bypixel:LettuceWrapper:0.2.0")
+    library("dev.bypixel:LettuceWrapper:0.3.2")
     library("io.lettuce:lettuce-core:7.1.0.RELEASE") {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-reactive")

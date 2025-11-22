@@ -7,8 +7,14 @@ update-check:
   check-interval: 3600 # in seconds
 
 redis:
+  enable-default-connection: true # if set to true, you can use the default connection without specifying a connection in your syntax in Skript
   host: "localhost"
   port: 6379
   username: "default" # if you don't know what this is, leave it as "default" or if your Redis server has no username, set to blank
   password: "ver!yS€cureP@ssw0rd" # set to blank if no password is required
   database: 0 # if you don't know what this is, leave it at 0
+  # ssl options
+  ssl: false # set to true if your Redis server requires SSL
+  allowSelfSignedCertificates: false # set to true if you want to allow self-signed SSL certificates
+  trustStorePath: "" # path to your trust store file, leave blank to use the default Java trust store
+  trustStorePassword: "" # password for your trust store, leave blank if not applicable

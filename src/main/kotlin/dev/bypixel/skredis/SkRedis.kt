@@ -5,6 +5,7 @@ import ch.njol.skript.SkriptAddon
 import com.github.Anon8281.universalScheduler.UniversalScheduler
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler
 import dev.bypixel.lettucewrapper.LettuceRedisClient
+import dev.bypixel.lettucewrapper.RedisCredentials
 import dev.bypixel.lettucewrapper.listener.RedisListener
 import dev.bypixel.skredis.commands.Commands
 import dev.bypixel.skredis.events.PlayerJoinListener
@@ -40,6 +41,9 @@ class SkRedis : KSpigot() {
     }
 
     init {
+        System.setProperty("io.lettuce.core.epoll", "false");
+        System.setProperty("io.lettuce.core.iouring", "false");
+        System.setProperty("io.lettuce.core.kqueue", "false");
         instance = this
     }
 
@@ -81,8 +85,13 @@ class SkRedis : KSpigot() {
         val redisUser = config.getString(Route.fromString("redis.username"), null)
 
         lettuceClient = LettuceRedisClient(
-            redisHost, redisPort, redisPassword,
-            CoroutineScope(Dispatchers.IO), redisUser, redisDatabase
+            RedisCredentials(
+                redisHost,
+                redisPort,
+                redisUser,
+                redisPassword,
+                redisDatabase
+            ), SkRedisCoroutineScope
         )
 
         RedisListener.setLettuceClient(lettuceClient)
