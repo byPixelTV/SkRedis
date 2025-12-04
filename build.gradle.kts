@@ -87,7 +87,7 @@ repositories {
 }
 
 val commandAPIVersion = "11.0.0"
-val skriptVersion = "2.13.1"
+val skriptVersion = "2.13.2"
 
 dependencies {
     library(kotlin("stdlib"))
