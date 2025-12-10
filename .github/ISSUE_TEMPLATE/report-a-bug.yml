@@ -62,9 +62,9 @@ body:
   - type: textarea
     attributes:
       label: SkRedis Info
-      description: Run '/skredis info' and paste here!
+      description: Run '/skredis info' and paste here! If the plugin wont load, just keep it empty.
     validations:
-      required: true
+      required: false
 
   - type: textarea
     attributes:
