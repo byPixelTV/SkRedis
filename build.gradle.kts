@@ -98,7 +98,7 @@ dependencies {
     library("dev.jorel:commandapi-kotlin-paper:$commandAPIVersion")
     library("dev.dejvokep:boosted-yaml:1.3.7")
     library("net.axay:kspigot:1.21.0")
-    library("dev.bypixel:LettuceWrapper:0.3.2+6255be0")
+    library("dev.bypixel:LettuceWrapper:0.3.2+9882376")
     library("io.lettuce:lettuce-core:7.2.1.RELEASE") {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-reactive")
