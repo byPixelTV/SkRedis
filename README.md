@@ -27,9 +27,10 @@
 <div>
 
 > 
-> # ⛏️ Minecraft Support 🎮:
+> # ⛏️ Minecraft Version Support 🎮:
 > - SkRedis is only compatible with the latest Minecraft version
-> - I will only support the latest release of Minecraft, this mean that **1.21.8 is** supported, but **1.21.1 isn't!** If you want to get official support, you have to use the latest version of **Skript, SkRedis and Minecraft!**
+> - This means that SkRedis will always support all version of the latest Minecraft release
+> - Example: If the latest Minecraft version is 1.21, SkRedis will support all 1.21.x versions, for example 1.21.0, 1.21.1, 1.21.2, etc.
 </div>
 
 </div>
