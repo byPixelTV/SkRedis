@@ -53,7 +53,9 @@ class ExprGetAllFieldValuesOfHash : SimpleExpression<String>() {
     override fun get(e: Event?): Array<String>? {
         val hashKey: String? = hashKey?.getSingle(e)
         if (hashKey != null) {
-            return SkRedis.instance.lettuceClient.sync.hvals(hashKey).toTypedArray()
+            return SkRedis.instance.lettuceClient.withSync {
+                it.hvals(hashKey).toTypedArray()
+            }
         }
         return null
     }

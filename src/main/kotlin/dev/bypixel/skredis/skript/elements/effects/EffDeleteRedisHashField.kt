@@ -57,8 +57,6 @@ class EffDeleteRedisHashField : Effect() {
 
     @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = SkRedis.instance
-
         val fieldName = fieldName!!.getSingle(e)
         if (fieldName == null) {
             SkRedisLogger.error("Redis hash field name was empty. Please check your code.")
@@ -71,7 +69,7 @@ class EffDeleteRedisHashField : Effect() {
         }
 
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            SkRedis.instance.lettuceClient.commands.hdel(hashKey, fieldName)
+            SkRedis.instance.lettuceClient.withCoroutines { it.hdel(hashKey, fieldName) }
         }
     }
 }

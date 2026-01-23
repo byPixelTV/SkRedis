@@ -50,7 +50,7 @@ class CondExists : Condition() {
 
     override fun check(e: Event? ): Boolean {
         val key = key?. getSingle(e) ?: return false
-        return SkRedis. instance.lettuceClient.sync.exists(key) == 0L != isNegated
+        return SkRedis. instance.lettuceClient.withSync { it.exists(key) == 0L != isNegated }
     }
 
     override fun toString(e: Event?, debug: Boolean): String {

@@ -52,7 +52,9 @@ class ExprGetRedisString : SimpleExpression<String>() {
     override fun get(e: Event?): Array<String>? {
         val stringKey: String? = stringKey?.getSingle(e)
         if (stringKey != null) {
-            return SkRedis.instance.lettuceClient.sync.get(stringKey)?.let { arrayOf(it) }
+            return SkRedis.instance.lettuceClient.withSync {  cnx ->
+                cnx.get(stringKey)?.let { arrayOf(it) }
+            }
         }
         return null
     }

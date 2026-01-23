@@ -70,7 +70,9 @@ class EffSetRedisString : Effect() {
             return
         }
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            SkRedis.instance.lettuceClient.commands.set(name, value)
+            SkRedis.instance.lettuceClient.withCoroutines {
+                it.set(name, value)
+            }
         }
     }
 }

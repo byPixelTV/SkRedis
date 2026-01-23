@@ -59,7 +59,7 @@ class EffDeleteRedisString : Effect() {
         val stringName = this.stringName?.getSingle(e) ?: return
 
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            SkRedis.instance.lettuceClient.commands.del(stringName)
+            SkRedis.instance.lettuceClient.withCoroutines { it.del(stringName) }
         }
     }
 }

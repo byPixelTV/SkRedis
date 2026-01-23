@@ -61,7 +61,9 @@ class ExprGetValueOfFieldInHash : SimpleExpression<String>() {
             return null
         }
 
-        val hashValue: String? = SkRedis.instance.lettuceClient.sync.hget(hashName, fieldName)
+        val hashValue: String? = SkRedis.instance.lettuceClient.withSync {
+            it.hget(hashName, fieldName)
+        }
         return if (hashValue != null) arrayOf(hashValue) else null
     }
 

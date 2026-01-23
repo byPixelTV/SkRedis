@@ -96,7 +96,7 @@ dependencies {
     library("dev.dejvokep:boosted-yaml:1.3.7")
     library("net.axay:kspigot:1.21.0")
     library("io.github.classgraph:classgraph:4.8.184")
-    library("dev.bypixel:LettuceWrapper:0.4.0")
+    library("dev.bypixel:LettuceWrapper:0.4.0+8ae7011")
     library("io.lettuce:lettuce-core:7.2.1.RELEASE") {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-reactive")

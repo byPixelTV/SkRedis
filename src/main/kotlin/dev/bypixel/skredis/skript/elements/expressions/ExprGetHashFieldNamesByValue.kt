@@ -60,7 +60,9 @@ class ExprGetHashFieldNamesByValue : SimpleExpression<String>() {
             return null
         }
 
-        val fieldNames: Array<String?> = SkRedis.instance.lettuceClient.sync.hgetall(hash).filterValues { it == value }.keys.toTypedArray()
+        val fieldNames: Array<String?> = SkRedis.instance.lettuceClient.withSync {  cnx ->
+            cnx.hgetall(hash).filterValues { it == value }.keys.toTypedArray()
+        }
 
         return if (fieldNames[0] != null) fieldNames.filterNotNull().toTypedArray() else null
     }

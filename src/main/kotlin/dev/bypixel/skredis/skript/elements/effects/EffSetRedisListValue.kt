@@ -74,7 +74,9 @@ class EffSetRedisListValue : Effect() {
             return
         }
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            SkRedis.instance.lettuceClient.commands.lset(listKey, listIndex.toLong(), listValue ?: "")
+            SkRedis.instance.lettuceClient.withCoroutines {
+                it.lset(listKey, listIndex.toLong(), listValue ?: "")
+            }
         }
     }
 }

@@ -53,7 +53,9 @@ class ExprGetRedisList : SimpleExpression<String>() {
     override fun get(e: Event?): Array<String>? {
         val redisListName: String? = listKey?.getSingle(e)
         if (redisListName != null) {
-            return SkRedis.instance.lettuceClient.sync.lrange(redisListName, 0, -1).toTypedArray()
+            return SkRedis.instance.lettuceClient.withSync {
+                it.lrange(redisListName, 0, -1).toTypedArray()
+            }
         }
         return null
     }

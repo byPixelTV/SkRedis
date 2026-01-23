@@ -54,12 +54,10 @@ class EffDeleteRedisList : Effect() {
 
     @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = SkRedis.instance
-
         val listName = this.listName?.getSingle(e) ?: return
 
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            SkRedis.instance.lettuceClient.commands.del(listName)
+            SkRedis.instance.lettuceClient.withCoroutines { it.del(listName) }
         }
     }
 }

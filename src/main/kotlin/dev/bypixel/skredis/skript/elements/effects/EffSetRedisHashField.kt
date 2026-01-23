@@ -79,7 +79,9 @@ class EffSetRedisHashField : Effect() {
         }
 
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            SkRedis.instance.lettuceClient.commands.hset(hashName, fieldName, fieldValue)
+            SkRedis.instance.lettuceClient.withCoroutines {
+                it.hset(hashName, fieldName, fieldValue)
+            }
         }
     }
 }

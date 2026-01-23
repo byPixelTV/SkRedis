@@ -57,8 +57,6 @@ class EffRemoveValueFromListByValue : Effect() {
 
     @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = SkRedis.instance
-
         val listVal = listValue!!.getSingle(e)
         if (listVal == null) {
             SkRedisLogger.error("Redis list value was empty. Please check your code.")
@@ -71,7 +69,7 @@ class EffRemoveValueFromListByValue : Effect() {
         }
 
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            SkRedis.instance.lettuceClient.commands.lrem(listKey, 0, listVal)
+            SkRedis.instance.lettuceClient.withCoroutines { it.lrem(listKey, 0, listVal) }
         }
     }
 }

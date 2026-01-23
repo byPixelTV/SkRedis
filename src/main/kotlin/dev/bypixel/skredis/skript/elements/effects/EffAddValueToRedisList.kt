@@ -57,8 +57,6 @@ class EffAddValueToRedisList : Effect() {
 
     @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(e: Event?) {
-        val plugin = SkRedis.instance
-
         val addValues = addValues!!.getAll(e).toList()
 
         val listKey = listKey!!.getSingle(e)
@@ -68,7 +66,7 @@ class EffAddValueToRedisList : Effect() {
             return
         }
         SkRedisCoroutineScope.launch(Dispatchers.IO) {
-            SkRedis.instance.lettuceClient.commands.rpush(listKey, *addValues.toTypedArray())
+            SkRedis.instance.lettuceClient.withCoroutines { it.rpush(listKey, *addValues.toTypedArray()) }
         }
     }
 }

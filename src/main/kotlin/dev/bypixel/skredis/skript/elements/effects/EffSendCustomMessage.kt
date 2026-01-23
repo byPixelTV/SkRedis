@@ -61,9 +61,6 @@ class EffSendCustomMessage : Effect() {
 
     @OptIn(ExperimentalLettuceCoroutinesApi::class)
     override fun execute(event: Event?) {
-        val plugin = SkRedis.instance
-
-
         val message = message!!.getSingle(event)
         val channel = channel!!.getSingle(event)
         if (message == null) {
