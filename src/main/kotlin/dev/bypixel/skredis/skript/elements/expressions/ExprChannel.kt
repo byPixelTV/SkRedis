@@ -6,14 +6,17 @@ import ch.njol.skript.doc.Examples
 import ch.njol.skript.doc.Name
 import ch.njol.skript.doc.Since
 import ch.njol.skript.lang.Expression
-import ch.njol.skript.lang.ExpressionType
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.skript.log.ErrorQuality
 import ch.njol.util.Kleenean
+import dev.bypixel.skredis.SkRedis
 import dev.bypixel.skredis.events.CustomRedisMessageEvent
 import dev.bypixel.skredis.events.RedisMessageEvent
 import org.bukkit.event.Event
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.DefaultSyntaxInfos
+import org.skriptlang.skript.registration.SyntaxRegistry
 
 @Suppress("unused")
 @Name("Redis Message Event - get redis channel")
@@ -23,13 +26,15 @@ import org.bukkit.event.Event
     "\tbroadcast \"Got message from channel %{_channel}%\"")
 @Since("1.0.0")
 class ExprChannel : SimpleExpression<String>() {
-
-    companion object{
-        init {
-            Skript.registerExpression(
-                ExprChannel::class.java, String::class.java,
-                ExpressionType.SIMPLE, "redis channel")
-        }
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.EXPRESSION,
+            DefaultSyntaxInfos.Expression.builder(ExprChannel::class.java, String::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { ExprChannel() }
+                .addPattern("redis channel")
+                .build()
+        )
     }
 
     override fun isSingle(): Boolean = true

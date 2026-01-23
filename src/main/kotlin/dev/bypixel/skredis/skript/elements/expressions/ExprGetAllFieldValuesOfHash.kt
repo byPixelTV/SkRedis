@@ -1,17 +1,18 @@
 package dev.bypixel.skredis.skript.elements.expressions
 
-import ch.njol.skript.Skript
 import ch.njol.skript.doc.Description
 import ch.njol.skript.doc.Examples
 import ch.njol.skript.doc.Name
 import ch.njol.skript.doc.Since
 import ch.njol.skript.lang.Expression
-import ch.njol.skript.lang.ExpressionType
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.util.Kleenean
 import dev.bypixel.skredis.SkRedis
 import org.bukkit.event.Event
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.DefaultSyntaxInfos
+import org.skriptlang.skript.registration.SyntaxRegistry
 
 @Suppress("unused")
 @Name("Redis Hashes - get all field values of redis hash")
@@ -21,13 +22,15 @@ import org.bukkit.event.Event
     "\tbroadcast \"Value: %loop-value%\"")
 @Since("1.0.0")
 class ExprGetAllFieldValuesOfHash : SimpleExpression<String>() {
-
-    companion object{
-        init {
-            Skript.registerExpression(
-                ExprGetAllFieldValuesOfHash::class.java, String::class.java,
-                ExpressionType.SIMPLE, "all field values of redis hash %string%")
-        }
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.EXPRESSION,
+            DefaultSyntaxInfos.Expression.builder(ExprGetAllFieldValuesOfHash::class.java, String::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { ExprGetAllFieldValuesOfHash() }
+                .addPattern("all field values of redis hash %string%")
+                .build()
+        )
     }
 
     private var hashKey: Expression<String>? = null

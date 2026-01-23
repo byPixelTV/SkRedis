@@ -6,14 +6,17 @@ import ch.njol.skript.doc.Examples
 import ch.njol.skript.doc.Name
 import ch.njol.skript.doc.Since
 import ch.njol.skript.lang.Expression
-import ch.njol.skript.lang.ExpressionType
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.skript.log.ErrorQuality
 import ch.njol.util.Kleenean
+import dev.bypixel.skredis.SkRedis
 import dev.bypixel.skredis.events.CustomRedisMessageEvent
 import dev.bypixel.skredis.events.RedisMessageEvent
 import org.bukkit.event.Event
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.DefaultSyntaxInfos
+import org.skriptlang.skript.registration.SyntaxRegistry
 
 @Suppress("unused")
 @Name("Redis Message Event - get redis message")
@@ -23,13 +26,15 @@ import org.bukkit.event.Event
     "\tbroadcast \"Got message: %{_message}%\"")
 @Since("1.0.0")
 class ExprMessage : SimpleExpression<String>() {
-
-    companion object{
-        init {
-            Skript.registerExpression(
-                ExprMessage::class.java, String::class.java,
-                ExpressionType.SIMPLE, "redis message")
-        }
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.EXPRESSION,
+            DefaultSyntaxInfos.Expression.builder(ExprMessage::class.java, String::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { ExprMessage() }
+                .addPattern("redis message")
+                .build()
+        )
     }
 
     override fun isSingle(): Boolean = true

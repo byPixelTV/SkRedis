@@ -1,17 +1,18 @@
 package dev.bypixel.skredis.skript.elements.expressions
 
-import ch.njol.skript.Skript
 import ch.njol.skript.doc.Description
 import ch.njol.skript.doc.Examples
 import ch.njol.skript.doc.Name
 import ch.njol.skript.doc.Since
 import ch.njol.skript.lang.Expression
-import ch.njol.skript.lang.ExpressionType
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.skript.lang.util.SimpleExpression
 import ch.njol.util.Kleenean
 import dev.bypixel.skredis.SkRedis
 import org.bukkit.event.Event
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.DefaultSyntaxInfos
+import org.skriptlang.skript.registration.SyntaxRegistry
 
 @Suppress("unused")
 @Name("Redis Hashes - get field names by value")
@@ -21,13 +22,15 @@ import org.bukkit.event.Event
     "\tbroadcast \"Field: %loop-value%\"")
 @Since("1.0.0")
 class ExprGetHashFieldNamesByValue : SimpleExpression<String>() {
-
-    companion object{
-        init {
-            Skript.registerExpression(
-                ExprGetHashFieldNamesByValue::class.java, String::class.java,
-                ExpressionType.SIMPLE, "name[s] of field with value %string% in redis (hash|value) %string%")
-        }
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.EXPRESSION,
+            DefaultSyntaxInfos.Expression.builder(ExprGetHashFieldNamesByValue::class.java, String::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { ExprGetHashFieldNamesByValue() }
+                .addPattern("name[s] of field with value %string% in redis (hash|value) %string%")
+                .build()
+        )
     }
 
     private var hashKey: Expression<String>? = null

@@ -1,6 +1,5 @@
 package dev.bypixel.skredis.skript.elements.section
 
-import ch.njol.skript.Skript
 import ch.njol.skript.config.SectionNode
 import ch.njol.skript.doc.Description
 import ch.njol.skript.doc.Examples
@@ -14,6 +13,9 @@ import ch.njol.skript.variables.Variables
 import ch.njol.util.Kleenean
 import dev.bypixel.skredis.SkRedis
 import org.bukkit.event.Event
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.SyntaxInfo
+import org.skriptlang.skript.registration.SyntaxRegistry
 import java.util.concurrent.atomic.AtomicReference
 
 @Name("Async Operations - run async")
@@ -44,7 +46,7 @@ class SecRunAsync : EffectSection() {
         triggerItems: List<TriggerItem?>?
     ): Boolean {
         next = last
-        loadCode(node) // Important: load section content
+        loadCode(node)
         return true
     }
 
@@ -92,13 +94,16 @@ class SecRunAsync : EffectSection() {
         fun clear(event: Event) {
             cancelMap.remove(event)
         }
-
-        init {
-            Skript.registerSection(
-                SecRunAsync::class.java,
-                "run [redis] async"
-            )
-        }
     }
 
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.SECTION,
+            SyntaxInfo.builder(SecRunAsync::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { SecRunAsync() }
+                .addPattern("run [redis] async")
+                .build()
+        )
+    }
 }

@@ -1,6 +1,5 @@
 package dev.bypixel.skredis.skript.elements.effects
 
-import ch.njol.skript.Skript
 import ch.njol.skript.doc.Description
 import ch.njol.skript.doc.Examples
 import ch.njol.skript.doc.Name
@@ -16,6 +15,9 @@ import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bukkit.event.Event
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.SyntaxInfo
+import org.skriptlang.skript.registration.SyntaxRegistry
 
 @Suppress("unused")
 @Name("Redis Hashes - delete redis hash")
@@ -23,11 +25,15 @@ import org.bukkit.event.Event
 @Examples("delete redis hash \"myHash\"")
 @Since("1.0.0")
 class EffDeleteRedisHash : Effect() {
-
-    companion object{
-        init {
-            Skript.registerEffect(EffDeleteRedisHash::class.java, "delete redis (hash|value) %string%")
-        }
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.EFFECT,
+            SyntaxInfo.builder(EffDeleteRedisHash::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { EffDeleteRedisHash() }
+                .addPattern("delete redis (hash|value) %string%")
+                .build()
+        )
     }
 
     private var hashKey: Expression<String>? = null

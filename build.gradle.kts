@@ -86,7 +86,6 @@ repositories {
     }
 }
 
-val commandAPIVersion = "11.1.0"
 val skriptVersion = "2.14.0"
 
 dependencies {
@@ -94,10 +93,9 @@ dependencies {
 
     compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
 
-    library("dev.jorel:commandapi-paper-shade:$commandAPIVersion")
-    library("dev.jorel:commandapi-kotlin-paper:$commandAPIVersion")
     library("dev.dejvokep:boosted-yaml:1.3.7")
     library("net.axay:kspigot:1.21.0")
+    library("io.github.classgraph:classgraph:4.8.184")
     library("dev.bypixel:LettuceWrapper:0.4.0")
     library("io.lettuce:lettuce-core:7.2.1.RELEASE") {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")

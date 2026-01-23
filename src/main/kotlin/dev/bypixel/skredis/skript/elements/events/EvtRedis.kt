@@ -1,26 +1,47 @@
 package dev.bypixel.skredis.skript.elements.events
 
-import ch.njol.skript.Skript
+import ch.njol.skript.doc.Description
+import ch.njol.skript.doc.Examples
+import ch.njol.skript.doc.Name
+import ch.njol.skript.doc.Since
 import ch.njol.skript.lang.Literal
 import ch.njol.skript.lang.SkriptEvent
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.skript.registrations.EventValues
+import dev.bypixel.skredis.SkRedis
 import dev.bypixel.skredis.events.RedisMessageEvent
 import org.bukkit.event.Event
-import java.util.*
+import org.skriptlang.skript.bukkit.registration.BukkitSyntaxInfos
+import org.skriptlang.skript.docs.Origin
 
+@Name("Custom Redis Message - PubSub")
+@Description("Called when any message is received from Redis. This event only fires when the message is sent by SkRedis.")
+@Examples("""
+on redis message:
+    broadcast "%redis message%"
+""")
+@Since("1.0.0")
 class EvtRedis : SkriptEvent() {
+    fun register() {
+        val addon = SkRedis.instance.addon
 
-    companion object {
-        init {
-            Skript.registerEvent("redis message", EvtRedis::class.java, RedisMessageEvent::class.java, "redis message").description("Called when a message is received from Redis. This event only fires when the message is sent by SkRedis.")
-                .examples("on redis message:", "    broadcast \"%redis message%\"")
-                .since("1.0.0")
-
-            EventValues.registerEventValue(RedisMessageEvent::class.java, String::class.java, { event -> event.channelName }, 0)
-            EventValues.registerEventValue(RedisMessageEvent::class.java, String::class.java, { event -> event.message }, 0)
-            EventValues.registerEventValue(RedisMessageEvent::class.java, Date::class.java, { event -> Date(event.date) }, 0)
-        }
+        addon.syntaxRegistry().register(
+            BukkitSyntaxInfos.Event.KEY,
+            BukkitSyntaxInfos.Event.builder(EvtRedis::class.java, "redis message")
+                .origin(Origin.of(addon))
+                .supplier { EvtRedis() }
+                .addEvent(RedisMessageEvent::class.java)
+                .addPattern("redis message")
+                .build()
+        )
+        EventValues.registerEventValue(
+            RedisMessageEvent::class.java,
+            String::class.java
+        ) { event -> event.message }
+        EventValues.registerEventValue(
+            RedisMessageEvent::class.java,
+            String::class.java,
+        ) { event -> event.channelName }
     }
 
     override fun init(literals: Array<Literal<*>?>?, i: Int, parseResult: SkriptParser.ParseResult?): Boolean {

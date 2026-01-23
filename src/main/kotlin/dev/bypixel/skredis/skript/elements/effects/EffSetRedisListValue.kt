@@ -1,6 +1,5 @@
 package dev.bypixel.skredis.skript.elements.effects
 
-import ch.njol.skript.Skript
 import ch.njol.skript.doc.Description
 import ch.njol.skript.doc.Examples
 import ch.njol.skript.doc.Name
@@ -16,6 +15,9 @@ import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bukkit.event.Event
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.SyntaxInfo
+import org.skriptlang.skript.registration.SyntaxRegistry
 
 @Suppress("unused")
 @Name("Redis Lists - set redis list value")
@@ -23,11 +25,15 @@ import org.bukkit.event.Event
 @Examples("set entry with index 2 in redis list \"myList\" to \"myNewValue\"")
 @Since("1.0.0")
 class EffSetRedisListValue : Effect() {
-
-    companion object{
-        init {
-            Skript.registerEffect(EffSetRedisListValue::class.java, "set entry with index %number% in redis (list|array) %string% to %string%")
-        }
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.EFFECT,
+            SyntaxInfo.builder(EffSetRedisListValue::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { EffSetRedisListValue() }
+                .addPattern("set entry with index %number% in redis (list|array) %string% to %string%")
+                .build()
+        )
     }
 
     private var listIndex: Expression<Number>? = null

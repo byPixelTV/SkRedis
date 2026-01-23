@@ -1,6 +1,5 @@
 package dev.bypixel.skredis.skript.elements.effects
 
-import ch.njol.skript.Skript
 import ch.njol.skript.doc.Description
 import ch.njol.skript.doc.Examples
 import ch.njol.skript.doc.Name
@@ -16,6 +15,9 @@ import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bukkit.event.Event
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.SyntaxInfo
+import org.skriptlang.skript.registration.SyntaxRegistry
 
 @Suppress("unused")
 @Name("Redis Lists - add value to redis list")
@@ -23,11 +25,15 @@ import org.bukkit.event.Event
 @Examples("add \"Hello\" to redis list \"myList\"")
 @Since("1.0.0")
 class EffAddValueToRedisList : Effect() {
-
-    companion object{
-        init {
-            Skript.registerEffect(EffAddValueToRedisList::class.java, "add %strings% to redis (list|array) %string%")
-        }
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.EFFECT,
+            SyntaxInfo.builder(EffAddValueToRedisList::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { EffAddValueToRedisList() }
+                .addPattern("add %strings% to redis (list|array) %string%")
+                .build()
+        )
     }
 
     private var addValues: Expression<String>? = null

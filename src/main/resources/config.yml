@@ -13,6 +13,8 @@ redis:
   username: "default" # if you don't know what this is, leave it as "default" or if your Redis server has no username, set to blank
   password: "ver!yS€cureP@ssw0rd" # set to blank if no password is required
   database: 0 # if you don't know what this is, leave it at 0
+  connectionPoolSize: 10 # maximum number of connections in the pool. Do not change this unless you know what you are doing.
+  connectionTimeout: 2000 # in milliseconds
   # ssl options
   ssl: false # set to true if your Redis server requires SSL
   allowSelfSignedCertificates: false # set to true if you want to allow self-signed SSL certificates

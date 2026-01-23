@@ -1,6 +1,5 @@
 package dev.bypixel.skredis.skript.elements.effects
 
-import ch.njol.skript.Skript
 import ch.njol.skript.doc.Description
 import ch.njol.skript.doc.Examples
 import ch.njol.skript.doc.Name
@@ -15,6 +14,9 @@ import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bukkit.event.Event
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.SyntaxInfo
+import org.skriptlang.skript.registration.SyntaxRegistry
 
 @Suppress("unused")
 @Name("Redis Strings - delete redis string")
@@ -22,11 +24,15 @@ import org.bukkit.event.Event
 @Examples("delete redis string \"myString\"")
 @Since("1.0.0")
 class EffDeleteRedisString : Effect() {
-
-    companion object{
-        init {
-            Skript.registerEffect(EffDeleteRedisString::class.java, "delete redis string %string%")
-        }
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.EFFECT,
+            SyntaxInfo.builder(EffDeleteRedisString::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { EffDeleteRedisString() }
+                .addPattern("delete redis string %string%")
+                .build()
+        )
     }
 
     private var stringName: Expression<String>? = null

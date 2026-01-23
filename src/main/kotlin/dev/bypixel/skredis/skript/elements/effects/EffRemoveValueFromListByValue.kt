@@ -1,6 +1,5 @@
 package dev.bypixel.skredis.skript.elements.effects
 
-import ch.njol.skript.Skript
 import ch.njol.skript.doc.Description
 import ch.njol.skript.doc.Examples
 import ch.njol.skript.doc.Name
@@ -16,6 +15,9 @@ import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bukkit.event.Event
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.SyntaxInfo
+import org.skriptlang.skript.registration.SyntaxRegistry
 
 @Suppress("unused")
 @Name("Redis Lists - delete entry with value from redis list")
@@ -23,11 +25,15 @@ import org.bukkit.event.Event
 @Examples("delete entry with value \"myValue\" from redis list \"myList\"")
 @Since("1.0.1")
 class EffRemoveValueFromListByValue : Effect() {
-
-    companion object{
-        init {
-            Skript.registerEffect(EffRemoveValueFromListByValue::class.java, "delete entry with value %string% from redis (list|array) %string%")
-        }
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.EFFECT,
+            SyntaxInfo.builder(EffRemoveValueFromListByValue::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { EffRemoveValueFromListByValue() }
+                .addPattern("delete entry with value %string% from redis (list|array) %string%")
+                .build()
+        )
     }
 
     private var listValue: Expression<String>? = null

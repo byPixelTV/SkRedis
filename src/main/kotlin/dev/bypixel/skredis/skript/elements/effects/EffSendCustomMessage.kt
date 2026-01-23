@@ -1,6 +1,5 @@
 package dev.bypixel.skredis.skript.elements.effects
 
-import ch.njol.skript.Skript
 import ch.njol.skript.doc.Description
 import ch.njol.skript.doc.Examples
 import ch.njol.skript.doc.Name
@@ -17,6 +16,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.bukkit.event.Event
 import org.json.JSONObject
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.SyntaxInfo
+import org.skriptlang.skript.registration.SyntaxRegistry
 
 @Suppress("unused")
 @Name("Redis Pub/Sub - send custom redis message")
@@ -24,11 +26,15 @@ import org.json.JSONObject
 @Examples("send custom redis message \"{\"\"foo\"\": \"\"bar\"\"}\" to channel \"cool-channel\"")
 @Since("2.0.0")
 class EffSendCustomMessage : Effect() {
-
-    companion object{
-        init {
-            Skript.registerEffect(EffSendCustomMessage::class.java, "send custom redis message %string% to [channel] %string%")
-        }
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.EFFECT,
+            SyntaxInfo.builder(EffSendCustomMessage::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { EffSendCustomMessage() }
+                .addPattern("send custom redis message %string% to [channel] %string%")
+                .build()
+        )
     }
 
     private var message: Expression<String>? = null

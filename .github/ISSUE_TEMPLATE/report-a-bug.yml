@@ -61,10 +61,10 @@ body:
 
   - type: textarea
     attributes:
-      label: SkRedis Info
-      description: Run '/skredis info' and paste here! If the plugin wont load, just keep it empty.
+      label: Skript Info
+      description: Run '/skript info' and paste here!
     validations:
-      required: false
+      required: true
 
   - type: textarea
     attributes:

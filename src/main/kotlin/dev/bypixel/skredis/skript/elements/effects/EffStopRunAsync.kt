@@ -8,8 +8,12 @@ import ch.njol.skript.lang.Effect
 import ch.njol.skript.lang.Expression
 import ch.njol.skript.lang.SkriptParser
 import ch.njol.util.Kleenean
+import dev.bypixel.skredis.SkRedis
 import dev.bypixel.skredis.skript.elements.section.SecRunAsync
 import org.bukkit.event.Event
+import org.skriptlang.skript.docs.Origin
+import org.skriptlang.skript.registration.SyntaxInfo
+import org.skriptlang.skript.registration.SyntaxRegistry
 
 @Name("Async Operations - stop async run")
 @Description("Stops an async run that was started with `run async`.")
@@ -47,12 +51,14 @@ class EffStopRunAsync : Effect() {
         return "stop run async"
     }
 
-    companion object {
-        init {
-            ch.njol.skript.Skript.registerEffect(
-                EffStopRunAsync::class.java,
-                "stop run [redis] async"
-            )
-        }
+    fun register() {
+        SkRedis.instance.addon.syntaxRegistry().register(
+            SyntaxRegistry.EFFECT,
+            SyntaxInfo.builder(EffStopRunAsync::class.java)
+                .origin(Origin.of(SkRedis.instance.addon))
+                .supplier { EffStopRunAsync() }
+                .addPattern("stop run [redis] async")
+                .build()
+        )
     }
 }
