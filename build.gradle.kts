@@ -74,34 +74,19 @@ repositories {
     maven {
         url = uri("https://repo.skriptlang.org/releases")
     }
-
-    maven {
-        name = "bypixelRepoReleases"
-        url = uri("https://repo.bypixel.dev/releases")
-    }
-
-    maven {
-        name = "bypixelRepoSnapshots"
-        url = uri("https://repo.bypixel.dev/snapshots")
-    }
 }
 
-val skriptVersion = "2.14.1"
+val skriptVersion = "2.14.0"
 
 dependencies {
     library(kotlin("stdlib"))
 
-    compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
 
     library("dev.dejvokep:boosted-yaml:1.3.7")
     library("net.axay:kspigot:1.21.0")
     library("io.github.classgraph:classgraph:4.8.184")
-    library("dev.bypixel:LettuceWrapper:0.4.0+8ae7011")
-    library("io.lettuce:lettuce-core:7.3.0.RELEASE") {
-        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
-        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-reactive")
-    }
-    library("org.json:json:20250517")
+    library("com.github.bypixeltv:LettuceWrapper:nightly-SNAPSHOT")
 
     library(kotlin("stdlib"))
 
