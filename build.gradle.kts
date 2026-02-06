@@ -76,7 +76,7 @@ repositories {
     }
 }
 
-val skriptVersion = "2.14.0"
+val skriptVersion = "2.14.1"
 
 dependencies {
     library(kotlin("stdlib"))
