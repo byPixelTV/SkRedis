@@ -94,7 +94,7 @@ dependencies {
 
     library("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     library("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.10.2")
-    library("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+    library("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     implementation("com.github.Anon8281:UniversalScheduler:0.1.7")
 }
