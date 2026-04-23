@@ -39,7 +39,6 @@ class ExprChannel : SimpleExpression<String>() {
 
     override fun isSingle(): Boolean = true
 
-    @Suppress("DEPRECATION")
     override fun init(
         exprs: Array<Expression<*>>,
         matchedPattern: Int,

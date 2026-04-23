@@ -7,7 +7,6 @@ import ch.njol.skript.doc.Since
 import ch.njol.skript.lang.Literal
 import ch.njol.skript.lang.SkriptEvent
 import ch.njol.skript.lang.SkriptParser
-import ch.njol.skript.registrations.EventValues
 import dev.bypixel.skredis.SkRedis
 import dev.bypixel.skredis.events.CustomRedisMessageEvent
 import org.bukkit.event.Event
@@ -34,14 +33,6 @@ class EvtCustomRedis : SkriptEvent() {
                 .addPattern("custom redis message")
                 .build()
         )
-        EventValues.registerEventValue(
-            CustomRedisMessageEvent::class.java,
-            String::class.java
-        ) { event -> event.message }
-        EventValues.registerEventValue(
-            CustomRedisMessageEvent::class.java,
-            String::class.java,
-        ) { event -> event.channelName }
     }
 
     override fun init(literals: Array<Literal<*>?>?, i: Int, parseResult: SkriptParser.ParseResult?): Boolean {

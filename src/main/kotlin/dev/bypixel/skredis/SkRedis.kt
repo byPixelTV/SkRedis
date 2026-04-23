@@ -23,7 +23,6 @@ import net.axay.kspigot.main.KSpigot
 import org.skriptlang.skript.addon.SkriptAddon
 import java.io.File
 import java.io.IOException
-import kotlin.inc
 
 class SkRedis : KSpigot() {
     lateinit var addon: SkriptAddon
@@ -37,9 +36,9 @@ class SkRedis : KSpigot() {
     }
 
     init {
-        System.setProperty("io.lettuce.core.epoll", "false");
-        System.setProperty("io.lettuce.core.iouring", "false");
-        System.setProperty("io.lettuce.core.kqueue", "false");
+        System.setProperty("io.lettuce.core.epoll", "false")
+        System.setProperty("io.lettuce.core.iouring", "false")
+        System.setProperty("io.lettuce.core.kqueue", "false")
         instance = this
     }
 
@@ -119,6 +118,7 @@ class SkRedis : KSpigot() {
             }
         } catch (e: Exception) {
             SkRedisLogger.error("Could not connect to the Redis server, please check your configuration. Disabling...<br>${e.message}")
+            e.printStackTrace()
             server.pluginManager.disablePlugin(instance)
             return
         }
@@ -202,7 +202,7 @@ class SkRedis : KSpigot() {
                             method.invoke(null)
                         } else {
                             if (target == null) {
-                                val ctor = try { clazz.getDeclaredConstructor() } catch (e: Exception) { null }
+                                val ctor = try { clazz.getDeclaredConstructor() } catch (_: Exception) { null }
                                 if (ctor != null) {
                                     ctor.isAccessible = true
                                     target = ctor.newInstance()
