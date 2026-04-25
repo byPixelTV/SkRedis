@@ -5,6 +5,7 @@ plugins {
     id("de.eldoria.plugin-yml.paper") version "0.9.0"
     id("xyz.jpenilla.run-paper") version "3.0.2"
     id("com.gradleup.shadow") version "9.4.1"
+    id("org.bxteam.quark") version "1.3.0"
 }
 
 fun getLatestTag(): String {
@@ -65,6 +66,7 @@ repositories {
     mavenCentral()
 
     maven("https://jitpack.io")
+    maven("https://repo.bxteam.org/releases")
 
     maven {
         name = "papermc"
@@ -86,17 +88,25 @@ dependencies {
     library("dev.dejvokep:boosted-yaml:1.3.7")
     library("net.axay:kspigot:1.21.0")
     library("io.github.classgraph:classgraph:4.8.184")
-    library("com.github.bypixeltv:LettuceWrapper:nightly-SNAPSHOT")
-
-    library(kotlin("stdlib"))
+    quark("com.github.bypixeltv:LettuceWrapper:nightly-SNAPSHOT") {
+        exclude(group = "io.netty", module = "netty-common")
+    }
+    quark("io.netty:netty-common:4.2.12.Final")
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
-    library("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-    library("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.10.2")
-    library("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
-
     implementation("com.github.Anon8281:UniversalScheduler:0.1.7")
+}
+
+quark {
+    platform = "paper"
+
+    repositories {
+        includeProjectRepositories()
+    }
+
+    relocate("io.lettuce", "dev.bypixel.skredis.lib.lettuce")
+    relocate("io.netty", "dev.bypixel.skredis.lib.netty")
 }
 
 sourceSets {

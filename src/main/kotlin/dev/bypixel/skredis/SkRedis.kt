@@ -20,6 +20,7 @@ import io.github.classgraph.ClassGraph
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.runBlocking
 import net.axay.kspigot.main.KSpigot
+import org.bxteam.quark.paper.PaperLibraryManager
 import org.skriptlang.skript.addon.SkriptAddon
 import java.io.File
 import java.io.IOException
@@ -29,6 +30,7 @@ class SkRedis : KSpigot() {
     lateinit var scheduler: TaskScheduler
     lateinit var config: YamlDocument
     lateinit var lettuceClient: LettuceRedisClient
+    lateinit var libraryManager: PaperLibraryManager
 
     companion object {
         lateinit var instance: SkRedis
@@ -44,6 +46,9 @@ class SkRedis : KSpigot() {
 
     override fun startup() {
         instance = this
+
+        libraryManager = PaperLibraryManager(this)
+        libraryManager.loadFromGradle()
 
         scheduler = UniversalScheduler.getScheduler(this)
 
