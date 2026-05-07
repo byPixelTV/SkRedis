@@ -78,7 +78,7 @@ repositories {
     }
 }
 
-val skriptVersion = "2.15.0"
+val skriptVersion = "2.15.2"
 
 dependencies {
     library(kotlin("stdlib"))
@@ -91,7 +91,7 @@ dependencies {
     quark("com.github.bypixeltv:LettuceWrapper:nightly-SNAPSHOT") {
         exclude(group = "io.netty", module = "netty-common")
     }
-    quark("io.netty:netty-common:4.2.12.Final")
+    quark("io.netty:netty-common:4.2.13.Final")
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
