@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "2.4.0"
     id("de.eldoria.plugin-yml.paper") version "0.9.0"
     id("xyz.jpenilla.run-paper") version "3.0.2"
-    id("com.gradleup.shadow") version "9.4.1"
+    id("com.gradleup.shadow") version "9.4.2"
     id("org.bxteam.quark") version "1.3.0"
 }
 
@@ -91,7 +91,7 @@ dependencies {
     quark("com.github.bypixeltv:LettuceWrapper:nightly-SNAPSHOT") {
         exclude(group = "io.netty", module = "netty-common")
     }
-    quark("io.netty:netty-common:4.2.14.Final")
+    quark("io.netty:netty-common:4.2.15.Final")
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
