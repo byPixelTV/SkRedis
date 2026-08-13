@@ -19,7 +19,6 @@
         "patch"
       ],
       "matchPackageNames": [
-        "*",
         "!gradle"
       ],
       "groupName": "all dependencies with patch changes"
