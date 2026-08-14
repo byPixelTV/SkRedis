@@ -1,7 +1,7 @@
 import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
-    kotlin("jvm") version "2.4.0"
+    kotlin("jvm") version "2.4.10"
     id("de.eldoria.plugin-yml.paper") version "0.9.0"
     id("xyz.jpenilla.run-paper") version "3.1.0"
     id("com.gradleup.shadow") version "9.4.2"
@@ -87,11 +87,11 @@ dependencies {
 
     library("dev.dejvokep:boosted-yaml:1.3.7")
     library("net.axay:kspigot:1.21.0")
-    library("io.github.classgraph:classgraph:4.8.184")
+    library("io.github.classgraph:classgraph:4.8.192")
     quark("com.github.bypixeltv:LettuceWrapper:nightly-SNAPSHOT") {
         exclude(group = "io.netty", module = "netty-common")
     }
-    quark("io.netty:netty-common:4.2.15.Final")
+    quark("io.netty:netty-common:4.2.17.Final")
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
