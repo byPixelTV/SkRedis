@@ -29,8 +29,10 @@
 > 
 > # ⛏️ Minecraft Version Support 🎮:
 > - SkRedis is only compatible with the latest Minecraft version
-> - This means that SkRedis will always support all version of the latest Minecraft release
-> - Example: If the latest Minecraft version is 1.21, SkRedis will support all 1.21.x versions, for example 1.21.0, 1.21.1, 1.21.2, etc.
+> - SkRedis is compatible with Paper and Purpur servers
+> - SkRedis is not compatible with Spigot or Bukkit servers
+> - SkRedis also always requires the latest version of Skript to work
+> - You need Java 25 or higher to run SkRedis
 </div>
 
 </div>

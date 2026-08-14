@@ -67,6 +67,7 @@ repositories {
 
     maven("https://jitpack.io")
     maven("https://repo.bxteam.org/releases")
+    maven("https://repo.pauli.fyi/releases")
 
     maven {
         name = "papermc"
@@ -78,15 +79,15 @@ repositories {
     }
 }
 
-val skriptVersion = "2.17.0-feature-docs-overhaul"
+val skriptVersion = "2.16.1"
 
 dependencies {
     library(kotlin("stdlib"))
 
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
 
     library("dev.dejvokep:boosted-yaml:1.3.7")
-    library("net.axay:kspigot:1.21.0")
+    library("net.axay:kspigot:1.22.0")
     library("io.github.classgraph:classgraph:4.8.192")
     quark("com.github.bypixeltv:LettuceWrapper:nightly-SNAPSHOT") {
         exclude(group = "io.netty", module = "netty-common")
@@ -123,7 +124,7 @@ sourceSets {
 tasks {
     compileJava {
         options.encoding = "UTF-8"
-        options.release.set(21)
+        options.release.set(25)
     }
 
     shadowJar {
@@ -141,11 +142,11 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.10")
+        minecraftVersion("26.2")
 
         downloadPlugins {
             url("https://github.com/SkriptLang/Skript/releases/download/$skriptVersion/Skript-${skriptVersion}.jar")
-            url("https://github.com/SkriptHub/SkriptHubDocsTool/releases/download/1.14/skripthubdocstool-1.14.jar")
+            url("https://github.com/SkriptHub/SkriptHubDocsTool/releases/download/1.17/skripthubdocstool-1.14.jar")
         }
     }
 }
@@ -153,7 +154,7 @@ tasks {
 tasks.withType(xyz.jpenilla.runtask.task.AbstractRun::class) {
     javaLauncher = javaToolchains.launcherFor {
         vendor = JvmVendorSpec.JETBRAINS
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
     jvmArgs("-XX:+AllowEnhancedClassRedefinition")
 }
@@ -200,5 +201,5 @@ paper {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 }
