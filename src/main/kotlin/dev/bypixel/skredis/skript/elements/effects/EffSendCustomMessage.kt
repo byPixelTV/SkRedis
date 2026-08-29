@@ -32,7 +32,7 @@ class EffSendCustomMessage : Effect() {
             SyntaxInfo.builder(EffSendCustomMessage::class.java)
                 .origin(Origin.of(SkRedis.instance.addon))
                 .supplier { EffSendCustomMessage() }
-                .addPattern("send custom redis message %string% to [channel] %string%")
+                .addPattern("(send|publish) custom (redis|pubsub) (message|msg) %string% to [channel] %string%")
                 .build()
         )
     }
