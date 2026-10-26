@@ -86,9 +86,9 @@ dependencies {
 
     compileOnly("io.papermc.paper:paper-api:26.2.build.+")
 
-    library("dev.dejvokep:boosted-yaml:1.3.7")
+    library("dev.dejvokep:boosted-yaml:1.3.8")
     library("net.axay:kspigot:1.22.0")
-    library("io.github.classgraph:classgraph:4.8.197")
+    library("io.github.classgraph:classgraph:4.8.199")
     quark("com.github.bypixeltv:LettuceWrapper:nightly-SNAPSHOT") {
         exclude(group = "io.netty", module = "netty-common")
     }
