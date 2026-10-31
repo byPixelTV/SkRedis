@@ -1,4 +1,6 @@
 import net.minecrell.pluginyml.paper.PaperPluginDescription
+import org.bxteam.quark.gradle.QuarkModule
+import org.bxteam.quark.gradle.ServerPlatform
 
 plugins {
     kotlin("jvm") version "2.4.21"
@@ -100,7 +102,8 @@ dependencies {
 }
 
 quark {
-    platform = "paper"
+    platform = ServerPlatform.PAPER
+    modules(QuarkModule.DEPENDENCY)
 
     repositories {
         includeProjectRepositories()
@@ -198,6 +201,10 @@ paper {
             joinClasspath = true
         }
     }
+}
+
+tasks.named("generatePluginYml") {
+    dependsOn("generatePaperPluginDescription")
 }
 
 kotlin {

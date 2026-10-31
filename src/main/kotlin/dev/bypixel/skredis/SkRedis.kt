@@ -23,7 +23,8 @@ import net.axay.kspigot.main.KSpigot
 import org.bxteam.quark.paper.PaperLibraryManager
 import org.skriptlang.skript.addon.SkriptAddon
 import java.io.File
-import java.io.IOException
+import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Modifier
 
 class SkRedis : KSpigot() {
     lateinit var addon: SkriptAddon
@@ -67,9 +68,9 @@ class SkRedis : KSpigot() {
         val configInputStream = object {}.javaClass.getResourceAsStream("/config.yml")
         config = YamlDocument.create(
             File("plugins/SkRedis/config.yml"), configInputStream!!, GeneralSettings.builder().setKeyFormat(
-            GeneralSettings.KeyFormat.OBJECT).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(
-            BasicVersioning("config-version")
-        ).build())
+                GeneralSettings.KeyFormat.OBJECT).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(
+                BasicVersioning("config-version")
+            ).build())
 
         val redisHost = config.getString(Route.fromString("redis.host"))
         val redisPort = config.getInt(Route.fromString("redis.port"))
@@ -146,109 +147,107 @@ class SkRedis : KSpigot() {
         RedisListenerImpl
 
         try {
-            val scan = ClassGraph()
+            val classLoader = javaClass.classLoader
+
+            ClassGraph()
+                .enableClassLoaders(classLoader)
+                .enableClasspath()
                 .acceptPackages("dev.bypixel.skredis.skript.elements")
                 .enableClassInfo()
                 .scan()
-
-            SkRedisLogger.info("Found ${scan.allClasses.size} Skript elements, registering...")
-            val startMillis = System.currentTimeMillis()
-
-            var classCount = 0
-            var success = 0
-            var failed = 0
-
-            val packagesList = mutableListOf<String>()
-
-            scan.allClasses
-                .filter { it.isPublic && !it.isAbstract && !it.isInnerClass }
-                .forEach { info ->
-                    runCatching {
-                        val clazz = info.loadClass()
-
-
-                        fun findRegisterIn(c: Class<*>?): java.lang.reflect.Method? {
-                            if (c == null) return null
-                            return c.declaredMethods.firstOrNull { it.name == "register" && it.parameterCount == 0 }
-                        }
-
-                        var method = findRegisterIn(clazz)
-                        var target: Any? = null
-
-                        if (method == null) {
-                            val instanceField = clazz.declaredFields.firstOrNull { it.name == "INSTANCE" }
-                            if (instanceField != null) {
-                                instanceField.isAccessible = true
-                                val instance = instanceField.get(null)
-                                method = findRegisterIn(instance?.javaClass)
-                                if (method != null) target = instance
-                            }
-                        }
-
-                        if (method == null) {
-                            val companionField = clazz.declaredFields.firstOrNull { it.name == "Companion" }
-                            if (companionField != null) {
-                                companionField.isAccessible = true
-                                val companion = companionField.get(null)
-                                method = findRegisterIn(companion?.javaClass)
-                                if (method != null) target = companion
-                            }
-                        }
-
-                        if (method == null) {
-                            method = clazz.declaredMethods.firstOrNull { it.name == "register" && it.parameterCount == 0 }
-                        }
-
-                        method = method ?: throw NoSuchMethodException("No parameterless register() in ${clazz.name} or its companion/object")
-
-                        method.isAccessible = true
-
-                        if (java.lang.reflect.Modifier.isStatic(method.modifiers)) {
-                            method.invoke(null)
-                        } else {
-                            if (target == null) {
-                                val ctor = try { clazz.getDeclaredConstructor() } catch (_: Exception) { null }
-                                if (ctor != null) {
-                                    ctor.isAccessible = true
-                                    target = ctor.newInstance()
-                                }
-                            }
-
-                            val declaring = method.declaringClass
-                            if (target == null || !declaring.isInstance(target)) {
-                                throw IllegalStateException("Could not obtain suitable instance of ${declaring.name} to invoke register() for ${clazz.name}")
-                            }
-
-                            method.invoke(target)
-                        }
-                    }.onSuccess {
-                        packagesList.add(info.packageName)
-                        success++
-                    }.onFailure { ex ->
-                        failed++
-                        SkRedisLogger.error("Failed to register Skript element: ${info.name}")
-                        ex.printStackTrace()
+                .use { scan ->
+                    val elements = scan.allClasses.filter { info ->
+                        info.isPublic && !info.isAbstract && !info.isNestedClass
                     }
-                    classCount++
-                }
 
-            val endMillis = System.currentTimeMillis()
-            SkRedisLogger.success("Registered $success/$classCount Skript elements in ${endMillis - startMillis} ms.")
-            if (success > 0) {
-                // print packages with class count
-                val packageCounts = packagesList.groupingBy { it }.eachCount()
-                SkRedisLogger.info("Registered elements by package:")
-                packageCounts.forEach { (pkg, count) ->
-                    SkRedisLogger.info(" - ${pkg.substringAfterLast(".")}: $count")
+                    SkRedisLogger.info("Found ${elements.size} Skript elements, registering...")
+                    val startMillis = System.currentTimeMillis()
+
+                    var success = 0
+                    var failed = 0
+                    val packagesList = mutableListOf<String>()
+
+                    elements.forEach { info ->
+                        runCatching {
+                            val clazz = Class.forName(info.name, false, classLoader)
+                            registerSkriptElement(clazz)
+                        }.onSuccess {
+                            packagesList.add(info.packageName)
+                            success++
+                        }.onFailure { exception ->
+                            failed++
+                            SkRedisLogger.error("Failed to register Skript element: ${info.name}")
+                            ((exception as? InvocationTargetException)?.targetException ?: exception).printStackTrace()
+                        }
+                    }
+
+                    val endMillis = System.currentTimeMillis()
+                    SkRedisLogger.success("Registered $success/${elements.size} Skript elements in ${endMillis - startMillis} ms.")
+
+                    if (failed > 0) {
+                        SkRedisLogger.warn("Failed to register $failed Skript elements.")
+                    }
+
+                    if (success > 0) {
+                        val packageCounts = packagesList.groupingBy { it }.eachCount()
+                        SkRedisLogger.info("Registered elements by package:")
+                        packageCounts.forEach { (pkg, count) ->
+                            SkRedisLogger.info(" - ${pkg.substringAfterLast(".")}: $count")
+                        }
+                    }
                 }
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
+        } catch (exception: Exception) {
+            SkRedisLogger.error("Failed to scan Skript elements: ${exception.message}")
+            exception.printStackTrace()
         }
 
         PlayerJoinListener()
 
         SkRedisLogger.success("SkRedis has been successfully enabled!")
+    }
+
+    private fun registerSkriptElement(clazz: Class<*>) {
+        val method = clazz.declaredMethods.firstOrNull {
+            it.name == "register" && it.parameterCount == 0
+        }
+
+        if (method != null) {
+            val target = if (Modifier.isStatic(method.modifiers)) {
+                null
+            } else {
+                val instanceField = clazz.declaredFields.firstOrNull {
+                    it.name == "INSTANCE" && Modifier.isStatic(it.modifiers)
+                }
+
+                if (instanceField != null) {
+                    instanceField.isAccessible = true
+                    instanceField.get(null)
+                } else {
+                    clazz.getDeclaredConstructor().apply {
+                        isAccessible = true
+                    }.newInstance()
+                }
+            }
+
+            method.isAccessible = true
+            method.invoke(target)
+            return
+        }
+
+        val companionField = clazz.declaredFields.firstOrNull {
+            it.name == "Companion" && Modifier.isStatic(it.modifiers)
+        } ?: throw NoSuchMethodException("No parameterless register() in ${clazz.name} or its companion")
+
+        companionField.isAccessible = true
+        val companion = companionField.get(null)
+            ?: throw IllegalStateException("Companion is null for ${clazz.name}")
+
+        val companionMethod = companion.javaClass.declaredMethods.firstOrNull {
+            it.name == "register" && it.parameterCount == 0
+        } ?: throw NoSuchMethodException("No parameterless register() in ${clazz.name} or its companion")
+
+        companionMethod.isAccessible = true
+        companionMethod.invoke(if (Modifier.isStatic(companionMethod.modifiers)) null else companion)
     }
 
     override fun shutdown() {
