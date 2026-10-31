@@ -84,7 +84,7 @@ val skriptVersion = "2.16.2"
 dependencies {
     library(kotlin("stdlib"))
 
-    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
+    compileOnly("io.papermc.paper:paper-api:26.3.build.+")
 
     library("dev.dejvokep:boosted-yaml:1.3.7")
     library("net.axay:kspigot:1.22.0")
