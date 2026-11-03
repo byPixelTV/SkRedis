@@ -94,7 +94,7 @@ dependencies {
     quark("com.github.bypixeltv:LettuceWrapper:nightly-SNAPSHOT") {
         exclude(group = "io.netty", module = "netty-common")
     }
-    quark("io.netty:netty-common:4.2.19.Final")
+    quark("io.netty:netty-common:4.2.20.Final")
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
