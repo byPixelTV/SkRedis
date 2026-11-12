@@ -70,7 +70,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://repo.bxteam.org/releases")
     maven("https://repo.pauli.fyi/releases")
-
+    maven("https://repo.bypixel.dev/releases")
     maven {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
@@ -81,18 +81,23 @@ repositories {
     }
 }
 
-val skriptVersion = "2.18.0-feature-docs-overhaul"
+val skriptVersion = "2.17.1"
 
 dependencies {
     library(kotlin("stdlib"))
+    compileOnly(kotlin("stdlib"))
 
     compileOnly("io.papermc.paper:paper-api:26.3.build.+")
 
     library("dev.dejvokep:boosted-yaml:1.3.8")
     library("net.axay:kspigot:1.22.0")
     library("io.github.classgraph:classgraph:6.0.2")
-    quark("com.github.bypixeltv:LettuceWrapper:nightly-SNAPSHOT") {
+    quark("dev.bypixel:LettuceWrapper:0.5.2") {
         exclude(group = "io.netty", module = "netty-common")
+        // Paper's plugin loader supplies Kotlin stdlib, and Paper supplies SLF4J and JSpecify.
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
+        exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "org.jspecify", module = "jspecify")
     }
     quark("io.netty:netty-common:4.2.20.Final")
 
@@ -111,6 +116,9 @@ quark {
 
     relocate("io.lettuce", "dev.bypixel.skredis.lib.lettuce")
     relocate("io.netty", "dev.bypixel.skredis.lib.netty")
+    relocate("kotlinx.coroutines", "dev.bypixel.skredis.lib.coroutines")
+    relocate("_COROUTINE", "dev.bypixel.skredis.lib._COROUTINE")
+    relocate("kotlinx.serialization", "dev.bypixel.skredis.lib.serialization")
 }
 
 sourceSets {
@@ -139,7 +147,10 @@ tasks {
             attributes["paperweight-mappings-namespace"] = "mojang"
         }
 
-        minimize()
+        minimize {
+            // Quark loads its bundled relocator through an isolated class loader.
+            exclude(dependency("org.bxteam.quark:quark-dependency:.*"))
+        }
 
         relocate("com.github.Anon8281.universalScheduler", "dev.bypixel.skredis.lib.universalscheduler")
     }

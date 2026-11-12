@@ -251,6 +251,12 @@ class SkRedis : KSpigot() {
     }
 
     override fun shutdown() {
+        if (!::lettuceClient.isInitialized) return
+
+        shutdownRedis()
+    }
+
+    private fun shutdownRedis() {
         RedisListener.unregisterListener(RedisListenerImpl)
 
         runBlocking {
