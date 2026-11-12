@@ -81,7 +81,7 @@ repositories {
     }
 }
 
-val skriptVersion = "2.17.1"
+val skriptVersion = "2.18.0-feature-docs-overhaul"
 
 dependencies {
     library(kotlin("stdlib"))
