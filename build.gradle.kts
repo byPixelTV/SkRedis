@@ -90,7 +90,7 @@ dependencies {
 
     library("dev.dejvokep:boosted-yaml:1.3.8")
     library("net.axay:kspigot:1.22.0")
-    library("io.github.classgraph:classgraph:6.0.1")
+    library("io.github.classgraph:classgraph:6.0.2")
     quark("com.github.bypixeltv:LettuceWrapper:nightly-SNAPSHOT") {
         exclude(group = "io.netty", module = "netty-common")
     }
