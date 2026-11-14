@@ -156,11 +156,9 @@ jobs:
             purpur
             paper
           game-versions: |
-            1.21.8
-            1.21.9
-            1.21.10
+            26.x
           java: |
-            Java 21
+            Java 25
           retry-attempts: 2
           retry-delay: 10000
           fail-mode: fail
