@@ -99,7 +99,7 @@ dependencies {
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "org.jspecify", module = "jspecify")
     }
-    quark("io.netty:netty-common:4.2.20.Final")
+    quark("io.netty:netty-common:4.2.21.Final")
 
     compileOnly("com.github.SkriptLang:Skript:$skriptVersion")
 
